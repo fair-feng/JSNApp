@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>会员卡</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <style>
+    #header {
+        /*position: fixed;;
+        top: 0;
+        left: 0;*/
+        width: 100%;
+        height: 42px;
+        /*background-color: #365365;*/
+        background: url('../image/topBg.png') no-repeat;
+        background-size: 100% 100%;
+        z-index: 999;
+    }
+    header .left {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 42px;
+        line-height: 42px;
+        color: #fff;
+        text-align: center;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    header .center {
+        position: relative;
+        width: 100%;
+        height: 42px;
+        line-height: 42px;
+        text-align: center;
+        font-size: 16px;
+        color: #FFFFFF;
+    }
+
+    .wrapper {
+        position: relative;
+        /*width: 100%;*/
+        height: 150px;
+        color: #FFEDB8;
+        /*background: url('../image/zhizunCar@2x.png') no-repeat;
+        background-size: 100% 100%;*/
+        border-radius: 5px;
+        margin: 0 15px;
+        margin-top: 10px;
+    }
+     .wrapper .wrap {
+        padding: 10px;
+    }
+    .wrapper .smallTextLogin {
+        font-size: 13px;
+        text-align: right;
+    }
+    .wrapper .bigTextLogin {
+        font-size: 26px;
+        margin-left: 28px;
+        margin-top: 15px;
+    }
+    .wrapper .goodsName {
+        position: absolute;
+        bottom: 30px;
+        left: 10px;
+        font-size: 12px;
+        text-align: left;
+    }
+    .wrapper .date {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 12px;
+        text-align: left;
+    }
+    .wrapper .num {
+        position: absolute;
+        bottom: 20px;
+        right: 50px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .wrapper .logo {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 40px;
+        right: 20px;
+        border-radius: 50%;
+
+    }
+    /* 没有卡 */
+    .noCard {
+        display: none;
+        margin-top: 35vh;
+    }
+    .noCard .block {
+        width: 140px;
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 14px;
+        color: #4E4E4E;
+    }
+    .noCard .block > img {
+        width: 140px;
+        height: 134px;
+        margin-bottom: 10px;
+    }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="center">会员卡</div>
+    </header>
+    <div id="wrap">
+        <div class="wrapper" onclick="fnGoCarDetails()">
+            <div class="wrap">
+                <p class="smallTextLogin">VIP</p>
+                <h3 class="bigTextLogin">5463546</h3>
+                <p class="date">有效期</p>
+            </div>
+        </div>
+    </div>
+    <!-- 暂无会员卡 -->
+    <div class="noCard">
+        <div class="block">
+            <img src="../image/notComments@2x.png" alt="">
+            <span>暂无会员卡</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function(){
+        // 防止header与状态栏重叠
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // 初始化数据请求
+        fnInitData();
+
+        // var headerH = $api.offset(header);
+        // var wrap = $api.byId('wrap');
+        // $api.css(wrap,'margin-top:' + headerH.h +'px');
+    };
+    function fnInitData() {
+        $('#wrap').html('');
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_card',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        },function(ret, err){
+            if (ret.code ==1) {
+                // console.log(JSON.stringify(ret));
+                var data = ret.data;
+                for (var i = 0; i < ret.data.length; i++) {
+                    var string = '';
+                    //  1至尊卡、2小分卡
+                    if(data[i].card_id == 1){
+                        string = '<div class="wrapper" onclick="fnGoCarDetails('+data[i].card_id+','+data[i].g_price_id+')">\
+                            <div class="wrap">\
+                                <p class="smallTextLogin">VIP'+data[i].name+'</p>\
+                                <h3 class="bigTextLogin">'+data[i].name+'</h3>\
+                                <p class="date">有效期'+data[i].end_time+'</p>\
+                            </div>\
+                        </div>';
+                    } else {
+                        string = '<div class="wrapper" onclick="fnGoCarDetails('+data[i].card_id+','+data[i].g_price_id+')">\
+                            <div class="wrap">\
+                                <p class="smallTextLogin">VIP'+data[i].name+'</p>\
+                                <h3 class="bigTextLogin">'+data[i].name+'</h3>\
+                                <p class="goodsName">'+data[i].goods_name+'</p>\
+                                <p class="date">有效期'+data[i].end_time+'</p>\
+                                <p class="num">X '+data[i].count_num+'</p>\
+                            </div>\
+                            <img class="logo" src="'+$api.reqUrl + data[i].goods_img+'" alt="">\
+                        </div>';
+                    }
+                    $('#wrap').append(string);
+                    $('.wrapper').eq(i).css({
+                        'background': 'url('+$api.reqUrl + data[i].img+')' + 'no-repeat',
+                        'background-size': '100% 100%'
+                    });
+                    $('.noCard').css('display','none');
+                }
+            } else {
+                // 显示暂无会员卡
+                $('.noCard').css('display','block');
+            }
+        });
+    }
+    // 点击卡跳转
+    function fnGoCarDetails(card_id,g_price_id) {
+        // card_id2小分卡跳转详情,至尊卡跳转列表
+        if(card_id == 2){
+            api.openWin({
+                name: 'submitOrder_win',
+                url: './submitOrder_win.html',
+                pageParam: {
+                    price_id: g_price_id,
+                    goodsNum: 1,
+                    vipType: 2, // 区分是否是从vip商品进来，隐藏+-(1.至尊卡购买，2.小分卡购买)
+                    joinType: 2, // 区分是1购物车购买 、2立即购买
+                }
+            });
+        }
+        // 至尊卡，到列表页
+        if(card_id == 1){
+            api.openWin({
+                name: 'zhizunList_win',
+                url: './zhizunList_win.html'
+            });
+        }
+    }
+</script>
+</html>

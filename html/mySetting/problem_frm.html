@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>意见反馈</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body,html {
+              background: #F3F3F3;
+          }
+          #wrapper {
+              padding: 3px 15px 0;
+          }
+          .sayTextarea {
+              width: 98%;
+              height: 159px;
+              background: #fff;
+              padding: 10px 1%;
+              outline: none;
+          }
+          .prompt {
+            font-size: 12px;
+            color: #4D4D4D;
+            margin: 12px 0;
+          }
+          .upData img {
+              display: none;
+              width: 76px;
+              height: 76px;
+          }
+          .fnUpImg {
+              display: inline-block;
+              width: 76px;
+              height: 76px;
+              line-height: 76px;
+              background: #fff;
+              text-align: center;
+              color: #999999;
+              font-size: 22px;
+              vertical-align: top;
+          }
+          .imgBlock {
+              display: inline-block;
+          }
+          .phone {
+              margin-top: 40px;
+              color: #434343;
+              font-size: 14px;
+          }
+          .phone input {
+              border-bottom: 1px solid grey;
+              outline: none;
+              padding-left: 10px;
+          }
+          /* 提交按钮 */
+          .submit {
+              height: 43px;
+              line-height: 43px;
+              background: #38596C;
+              color: #fff;
+              text-align: center;
+              border-radius: 5px;
+              margin-left: 15px;
+              margin-right: 15px;
+              margin-top: 100px;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="wrapper">
+        <textarea maxlength="255" class="sayTextarea" name="name" rows="8" cols="80" placeholder="请填写10个字以上的问题反馈内容，以便我们为您提供更好的解决方案"></textarea>
+        <p class="prompt">添加问题图片以便我们为您及时解决问题</p>
+        <div class="upData">
+            <div class="fnUpImg" onclick="fnUpDataImg()">＋</div>
+            <div class="imgBlock">
+                <img src="" alt="">
+                <img src="" alt="">
+            </div>
+        </div>
+        <div class="phone">
+            <span>联系方式</span>
+            <input type="text" placeholder="请输入您的手机号，邮箱.">
+        </div>
+        <div class="submit" onclick="fnSubmit()">提交</div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+   <script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+      var index = 0;
+    function fnUpDataImg() {
+        api.getPicture({
+            sourceType: 'album',
+            encodingType: 'png',
+            mediaValue: 'pic',
+            destinationType: 'base64',
+            allowEdit: false,
+            quality: 50,
+            // targetWidth: 200,
+            // targetHeight: 200,
+            saveToPhotoAlbum: false
+        }, function(ret, err){
+            if(ret){
+                if(ret.data == ''){
+                    return
+                }
+                index ++;
+                var imgDataBase = ret.base64Data;
+                if(index % 2 == 0){
+                    $('.imgBlock img').eq(1).attr('src',imgDataBase);
+                    $('.imgBlock img').eq(1).css('display','inline-block');
+                    dataArr[1] = $('.imgBlock img').eq(0).attr('src');
+                } else {
+                    $('.imgBlock img').eq(0).attr('src',imgDataBase);
+                    $('.imgBlock img').eq(0).css('display','inline-block');
+                    dataArr[0] = $('.imgBlock img').eq(0).attr('src');
+                }
+            }
+        });
+    }
+    // 提交
+    var dataArr = [];
+    //   验证
+    var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+    function fnSubmit() {
+        var contents = $('.sayTextarea').val();
+        var phones = $('.phone input').val();
+        if(contents == '' || contents.length < 10){
+            api.toast({
+                msg: '请填写相应长度的内容',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        if (!reg.test(phones)) {
+            api.toast({
+                msg: '手机号码有误',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/Service/feedback',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    content: contents,
+                    img: dataArr,
+                    phone: phones
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code ==1){
+                    api.toast({
+                        msg: '提交成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+  </script>
+  </html>

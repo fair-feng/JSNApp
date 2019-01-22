@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>提交订单</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #f8f8f8;
+        }
+
+        .address {
+            padding: 15px;
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-around;
+            color: #4D4D4D;
+            background: #ffffff;
+            margin-bottom: 10px;
+            margin: 10px 18px;
+            box-shadow: 5px 5px 14px #e8e8e8;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .address i {
+            line-height: 54px;
+        }
+
+        .address i:first-child {
+            font-size: 28px;
+            color: #f0e5cd;
+        }
+
+        .address .center {
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+            margin-right: 10px;
+            min-width: 65%;
+            line-height: 20px
+        }
+
+        .center span {
+            padding: 3px 0;
+        }
+
+        .center .name {
+            font-size: 14px;
+        }
+
+        .center .phone,
+        .center .addre {
+            font-size: 12px;
+        }
+        /* 商品信息 */
+
+        .goodsDetails {
+            padding: 15px;
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .goodsDetails .left {
+            width: 80px;
+            min-width: 80px;
+            height: 70px;
+            border-radius: 6px;
+        }
+
+        .goodsDetails .right {
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #434343;
+            margin-left: 15px;
+            width: 100%;
+        }
+
+        .goodsDetails .right .text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            line-height: 17px;
+            height: 34px;
+        }
+
+        .goodsDetails .right .bottom {
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .goodsDetails .right .bottom p:first-child {
+            color: #d3b56f;
+        }
+        /* 购买数量 */
+
+        .publiceBlock {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-top: 1px solid #EFEFEF;
+        }
+        .flexB {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            font-size: 12px;
+            color: #d0d0d0;
+        }
+        .flexB:first-child {
+            border-top: 1px solid #EFEFEF;
+        }
+        .buyNumber .title {
+            font-size: 13px;
+            color: #242424;
+            line-height: 25px;
+        }
+
+        .buyNumber .numberBlock span {
+            display: inline-block;
+            width: 37px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+        }
+
+        .numberBlock .reduce,
+        .numberBlock .add {
+            background: #EFEFEF;
+        }
+
+        .goodsVal p:last-child {
+            color: #d3b56f;
+        }
+
+        .leaveMsg>input {
+            width: 66%;
+            outline: none;
+            font-size: 13px;
+            text-align: right;
+        }
+        /* footer */
+
+        #footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            display: -webkit-flex;
+            background: #fff;
+            width: 100%;
+            height: 47px;
+            line-height: 47px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #footer .left {
+            width: 60%;
+        }
+
+        #footer .left p {
+            display: inline-block;
+            color: #d3b56f;
+            font-size: 18px;
+        }
+
+        #footer .right {
+            color: #fff;
+            width: 40%;
+            background: #d3b56f;
+        }
+        #content {
+            margin: 0 18px;
+            background: #f8f8f8;
+            overflow: hidden;
+            margin-bottom: 60px;
+        }
+        #content > li {
+            background: #fff;
+            box-shadow: 5px 5px 8px #e8e8e8;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .notAddre  {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction:column;
+            text-align: center;
+            font-size: 12px;
+            display: none;
+        }
+        .notAddre icon {
+            font-size: 28px;
+            color: #f0e5cd;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="address hasAddre" tapmode onclick="fnGoAddre()">
+        <i class="iconfont icon-weizhi"></i>
+        <section class="center">
+            <p>
+                <span class="name"></span>
+                <span class="phone"></span>
+            </p>
+            <span class="addre"></span>
+        </section>
+    </div>
+    <div class="address notAddre" onclick="fnGoAddre()">
+        <icon class="iconfont icon-weizhi"></icon>
+        <p>暂无默认地址，请设置默认地址~</p>
+    </div>
+    <ul id="content">
+         <!-- <li>
+            <div class="goodsDetails">
+                <img class="left" src="../image/swiper-01.png" alt="">
+                <section class="right">
+                    <p class="text">[为你推荐]沪美竹炭黑面膜控油清洁提亮肤色收缩毛孔睡眠免洗学生男士正品</p>
+                    <div class="bottom">
+                        <p><span>￥：</span><span class="val">164</span></p>
+                        <p><span>X</span><span class="num">1</span></p>
+                    </div>
+                </section>
+            </div>
+            <div class="type">
+                <div class="flexB">
+                    <span>商品总额：</span>
+                    <p class="shipVal">￥<span class="val">25</span></p>
+                </div>
+                <div class="flexB">
+                    <span>运费：</span>
+                    <p class="shipVal">￥<span class="val">25</span></p>
+                </div>
+            </div>
+            <div class="publiceBlock leaveMsg">
+                <span>备注：</span>
+                <input type="text" placeholder="请输入买家备注">
+            </div>
+            <div class="publiceBlock goodsVal">
+                <p>合计：</p>
+                <p><span class="val">￥1314</span></p>
+            </div>
+        </li> -->
+    </ul>
+    <!-- footer -->
+    <div id="footer">
+        <div class="left">
+            需支付：
+            <p>￥：<span class="val"></span></p>
+        </div>
+        <div class="right" onclick="fnSubmitOrder()">提交订单</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        fnInitData();
+    };
+    // 运费
+    var freight;
+    // 数量
+    var goodsNumber = '';
+    /**数量加减函数
+    * that this 对象
+    * val 单件商品价格
+    * freight 单件商品运费
+    */
+    function fnReduce(that,val,freight) {
+        var what = that;
+        goodsNumber = $(what).siblings('.num').html();
+        if (goodsNumber <= 1) {
+            return;
+        }
+        goodsNumber--;
+        fnTotalValue(what,val,freight);
+    }
+
+    function fnAdd(that,val,freight) {
+        var what = that;
+        goodsNumber = $(what).siblings('.num').html();
+        goodsNumber++;
+        fnTotalValue(what,val,freight);
+    }
+    // 初始化数据请求
+    function fnInitData() {
+        // 判断是立即购买还是购物车
+        var typeID;
+        var goodsNumberType;
+        if(api.pageParam.joinType == 1){ // 购物车
+            typeID = api.pageParam.sc_id;
+        } else {
+            typeID = api.pageParam.price_id;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/index',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: typeID,
+                    type: api.pageParam.joinType, // 1购物车购买,2立即购买， api.pageParam.joinType
+                    mcard: api.pageParam.vipType, // 向后台展示这是vip商品1至尊卡 2小分卡
+                }
+            }
+        },function(ret, err){
+            if (ret) {
+                $('#content').html('');
+                var data = ret.data;
+                var goodsData = ret.data.goods;
+                // 价格判断
+                var goodsNums = '';
+                if(api.pageParam.joinType == 2){ // 立即购买
+                    goodsData[0].sc_num = api.pageParam.goodsNum
+                }
+                // 地址
+                if(data.my_city){
+                    $('.hasAddre').css('display','flex');
+                    $('.notAddre').hide();
+                    $('.center .name').html('姓名:' + data.my_city.name);
+                    $('.center .phone').html(data.my_city.phone);
+                    $('.center .addre').html(data.my_city.city + data.my_city.city_xq);
+                } else {
+                    $('.notAddre').css('display','flex');
+                    $('.hasAddre').hide();
+                    api.toast({
+                        msg: '无默认地址，请设置默认地址',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+                var totalPrice = 0;
+                for (var i = 0; i < goodsData.length; i++) {
+                    // 用于至尊卡数量循环
+                    if(api.pageParam.vipType == 1){
+                        goodsData[i].sc_num = 1;
+                    }
+                    // 运费
+                    freight = Number(goodsData[i].goods_postage * goodsData[i].sc_num).toFixed(2);
+                    // 商品总额
+                    var goodsVal = Number((goodsData[i].price * goodsData[i].sc_num)).toFixed(2);
+                    // 单个种类合计
+                    var oneClassVal = Number(goodsVal) + Number(freight);
+                    // 需支付
+                    totalPrice += (Number(freight)+Number(goodsVal));
+                    // <div class="publiceBlock buyNumber">\
+                    //     <span class="title">购买数量</span>\
+                    //     <section class="numberBlock">\
+                    //         <span class="reduce" onclick="fnReduce(this,'+goodsData[i].price+','+goodsData[i].goods_postage+')">－</span>\
+                    //         <span class="num">'+ goodsData[i].sc_num +'</span>\
+                    //         <span class="add" onclick="fnAdd(this,'+goodsData[i].price+','+goodsData[i].goods_postage+')">+</span>\
+                    //     </section>\
+                    // </div>\
+                    var string = '<li>\
+                        <div class="goodsDetails">\
+                            <img class="left" src="'+$api.reqUrl + goodsData[i].goods_img+'" alt="">\
+                            <section class="right">\
+                                <p class="text">'+goodsData[i].goods_name+'</p>\
+                                <div class="bottom">\
+                                    <p><span>￥：</span><span class="val">'+goodsData[i].price+'</span></p>\
+                                    <p><span>X</span><span class="num">'+goodsData[i].sc_num+'</span></p>\
+                                </div>\
+                            </section>\
+                        </div>\
+                        <div class="type">\
+                            <div class="flexB">\
+                                <span>商品总额：</span>\
+                                <p class="totalP">￥<span class="val">'+goodsVal+'</span></p>\
+                            </div>\
+                            <div class="flexB">\
+                                <span>运费：</span>\
+                                <p class="shipVal">￥<span class="val">'+freight+'</span></p>\
+                            </div>\
+                        </div>\
+                        <div class="publiceBlock leaveMsg">\
+                            <span>备注：</span>\
+                            <input type="text" placeholder="请输入买家备注">\
+                        </div>\
+                        <div class="publiceBlock goodsVal">\
+                            <p>合计：</p>\
+                            <p><span class="val">￥'+oneClassVal+'</span></p>\
+                        </div>\
+                    </li>';
+
+                    var stringsss = "<li><div class=\"goodsDetails\"><img class=\"left\" src=\""
+                    + ($api.reqUrl + goodsData[i].goods_img) + "\" alt=\"\"><section class=\"right\"><p class=\"text\">" +
+                    goodsData[i].goods_name + "</p><div class=\"bottom\"><p><span>￥：</span><span class=\"val\">" +
+                     goodsData[i].price + "</span></p><p><span>X</span><span class=\"num\">" + goodsData[i].sc_num +
+                      "</span></p></div></section></div><div class=\"publiceBlock buyNumber\"><span class=\"title\">购买数量</span><section class=\"numberBlock\"><span class=\"reduce\" onclick=\"fnReduce(this,"+ goodsData[i].price+','+goodsData[i].goods_postage +")\">－</span><span class=\"num\">" +
+                       goodsData[i].sc_num + "</span><span class=\"add\" onclick=\"fnAdd(this,"+goodsData[i].price+','+goodsData[i].goods_postage+")\">+</span></section></div><div class=\"publiceBlock type\"><span>配送方式</span><p class=\"shipVal\">运费：<span class=\"val\">" +
+                       freight + "</span>元</p></div><div class=\"publiceBlock leaveMsg\"><span>买家留言</span><input type=\"text\" placeholder=\"选填.填写内容和卖家协商确认\"></div><div class=\"publiceBlock goodsVal\"><p>共<span class=\"num\">" +
+                        goodsData[i].sc_num + "</span>件商品</p><p>小计:￥<span class=\"val\">" + goodsVal + "</span>元</p></div></li>"
+
+                    $('#content').append(string);
+                    // 是否隐藏 数量加减
+                    if(api.pageParam.vipType == 1||api.pageParam.vipType == 2){
+                        $('.buyNumber').css('display','none');
+                    }
+                    // 需支付
+                    $('#footer .val').html(totalPrice.toFixed(2));
+                }
+
+            }
+        });
+    }
+    // 提交订单
+    function fnSubmitOrder() {
+        // 是否有默认地址
+        if($('.address .addre').text() == ''){
+            api.toast({
+                msg: '请设置默认地址',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        if(goodsNumber != ''){
+            api.pageParam.goodsNum = goodsNumber;
+        }
+        api.pageParam.totalPrice = $('#footer .val').html();
+        api.pageParam.bz = $('.leaveMsg input').val();
+        api.pageParam.vipType = api.pageParam.vipType;
+        api.pageParam.ifOrderType = 0; // 是否是从订单页发起，0 否，1，是
+        api.openFrame({
+            name: 'payment_frm',
+            url: './payment_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: api.pageParam,
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.1)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    }
+    //  防止键盘弹出，fixed布局混乱
+    var h = document.body.scrollHeight;
+    window.onresize = function() {
+        if (document.body.scrollHeight < h) {
+            $('#footer').css('display', 'none');
+        } else {
+            $('#footer').css('display', 'flex');
+        }
+    };
+    // 地址管理
+    function fnGoAddre() {
+        api.openWin({
+            name: 'address_win',
+            url: './address_win.html',
+            pageParam: {
+                type: 'order'
+            }
+        });
+    }
+    // 总价计算函数
+    function fnTotalValue(what,val,freight) {
+        $(what).siblings('.num').html(goodsNumber);
+        $(what).parents('li').children('.goodsDetails').find('.num').html(goodsNumber);
+        // 运费
+        var yunfei = goodsNumber * freight;
+        $(what).parents('li').children('.type').find('.val').html(yunfei);
+
+        var smallVal = goodsNumber * val + yunfei;
+        $(what).parents('li').children('.goodsVal').find('.val').html(smallVal.toFixed(2));
+        $(what).parents('li').children('.goodsVal').find('.num').html(goodsNumber);
+        // 合计
+        var totalVal = 0;
+        for (var i = 0; i < $('#content li').length; i++) {
+            totalVal += Number($('#content li').eq(i).find('.goodsVal .val').html());
+        }
+        $('#footer .val').html(totalVal.toFixed(2));
+    }
+</script>
+
+</html>

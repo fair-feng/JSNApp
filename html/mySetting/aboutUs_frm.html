@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>关于我们</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        #content {
+            padding: 40px 20px 0;
+        }
+
+        #content img {
+            width: 90%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content"></div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据
+        fnInitData();
+    };
+
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Service/about',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    var data = ret.data;
+                    $('#content').html(data.con);
+                }
+            }
+        });
+
+    }
+</script>
+
+</html>

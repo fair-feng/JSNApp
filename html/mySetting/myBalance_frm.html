@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>我的余额</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        #wrapper li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-top: 1px solid #F3F3F3;
+            background: #fff;
+        }
+
+        #wrapper li>span {
+            color: #404040;
+            font-size: 14px;
+            line-height: 25px;
+        }
+
+        .title {
+            color: #404040;
+            font-size: 14px;
+        }
+        /* 账户余额 */
+
+        .balance {
+            color: #38596C;
+            font-size: 14px;
+            padding: 15px;
+            background: #fff;
+        }
+
+        .balance .text {
+            font-size: 14px;
+            padding: 42px 75px 70px;
+        }
+
+        .balance .text .money {
+            font-size: 34px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="balance">
+        <p>账户余额</p>
+        <div class="text">
+            <p><span class="money">0.00</span>元</p>
+        </div>
+    </div>
+    <ul id="wrapper">
+        <li>
+            <span class="title">提现方式</span>
+        </li>
+        <li onclick="fnAliPayCash()">
+            <span>支付宝提现</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnBankCardCash()">
+            <span>银行卡提现</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+    </ul>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+    };
+    // 支付宝提现
+    function fnAliPayCash() {
+        api.openWin({
+            name: 'balanceAliPayCash_win',
+            url: './balanceAliPayCash_win.html',
+            pageParam: {
+                type: 1
+            }
+        });
+    }
+    // 银行卡提现
+    function fnBankCardCash() {
+        api.openWin({
+            name: 'balanceBankCardCash_win',
+            url: './balanceBankCardCash_win.html',
+            pageParam: {
+                type: 2
+            }
+        });
+    }
+    // 初始化数据
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/User/user_info',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code ==1){
+                    $('.balance .money').html(ret.data.user_money);
+                }
+            }
+        });
+    }
+</script>
+
+</html>

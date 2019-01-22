@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>我的推荐</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+      <style>
+          .top {
+              color: #383838;
+              font-size: 14px;
+              padding: 32px 15px 10px;
+              border-bottom: 1px solid #f3f3f3;
+          }
+          .top .id span {
+              color: #E4084B;
+              font-size: 18px;
+          }
+          .top .num {
+              text-align: right;
+              margin-top: 40px;
+          }
+          /* 列表 */
+          #list {
+              width: 100%;
+              padding: 17px 15px;
+              color: #383838;
+          }
+          /*#list li {
+              display: -webkit-flex;
+              display: flex;
+              justify-content: space-between;
+              margin-top: 20px;
+          }
+          #list .left {
+              display: flex;
+          }
+          #list .left img {
+              width: 34px;
+              height: 34px;
+              border-radius: 50%;
+              margin-right: 22px;
+              vertical-align: middle;
+          }
+          #list .left span {
+              vertical-align: middle;
+              font-size: 14px;
+          }
+          #list .vipImg img {
+              width: 50px;
+          }
+          .rightDate {
+              font-size: 12px;
+              line-height: 34px;
+          }*/
+
+          #list tr {
+              display: flex;
+              justify-content: space-around;
+              font-size: 14px;
+              color: #383838;
+          }
+          #list tr td:nth-of-type(1){
+              width: 34px;
+          }
+          #list tr td:nth-of-type(2){
+              width: 80px;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              text-align: center;
+          }
+          #list tr td:nth-of-type(3){
+              width: 87px;
+          }
+          #list tr td:nth-of-type(6){
+              width: 76px;
+          }
+          #list td {
+              line-height: 34px;
+          }
+          #list .userImg img {
+              width: 34px;
+              height: 34px;
+              border-radius: 50%;
+          }
+          .vip img {
+              width: 30px;
+              min-width: 30px;
+              height: 30px;
+          }
+          .rightDate {
+              font-size: 12px;
+              line-height: 34px;
+          }
+          #list .titles {
+              /*display: none;*/
+          }
+      </style>
+  </head>
+  <body>
+        <div class="top">
+            <p class="id">推荐ID账号：<span></span></p>
+            <p class="num">推荐人数<span>0</span>个</p>
+        </div>
+        <table id="list">
+            <!-- <li>
+                <div class="left">
+                    <img src="../../image/swiper-01.png" alt="">
+                    <span>这是个昵称电商</span>
+                    <span>188****8645</span>
+                </div>
+                <div class="vipImg">
+                    <p>
+                        <span>有</span>
+                        <i class="iconfont icon-fanhui"></i>
+                    </p>
+                    <p>
+                        <span>误</span>
+                        <i class="iconfont icon-fanhui"></i>
+                    </p>
+                </div>
+                <div class="rightDate">2018-6-15</div>
+            </li> -->
+            <tr class="titles">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="font-size:12px;width:45px;text-align:center">至尊卡</td>
+                <td style="font-size:12px;width:45px;text-align:center">小分卡</td>
+                <td></td>
+            </tr>
+            <!-- <tr>
+                <td class="userImg">
+                    <img src="../../image/zhizunCar@2x.png" alt="">
+                </td>
+                <td>这是个昵称</td>
+                <td>188****8645</td>
+                <td class="vip" style="margin-right:5px;">
+                    <img src="../../image/vip.png" alt="">
+                </td>
+                <td class="vip">
+                    <img src="../../image/notVip.png" alt="">
+                </td>
+                <td class="rightDate">2018-6-15</td>
+            </tr> -->
+        </table>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        // 初始化数据请求
+        fnInitData();
+      };
+      function fnInitData() {
+          api.ajax({
+              url: $api.reqUrl + 'Home/My/my_invitation',
+              method: 'post',
+              data: {
+                  values: {
+                      token: $api.getStorage('userToken'),
+                  },
+              }
+          },function(ret, err){
+            //   console.log(JSON.stringify(ret));
+                if(ret.code == 1){
+                    var data = ret.data;
+                    if(data.list.length>0){
+                        $('#list .titles').css('display','block');
+                    }
+                    $('.top .id span').html(data.user.user_invita);
+                    $('.top .num span').html(data.list.length);
+                    for (var i = 0; i < data.list.length; i++) {
+                        var xfk,zzk;
+
+                        if(data.list[i].card_zzk != 0){
+                            zzk = '../../image/vip.png';
+                        } else {
+                            zzk = '../../image/notVip.png';
+                        }
+                        if(data.list[i].card_xfk != 0){
+                            xfk = '../../image/ico-vip.png';
+                        } else {
+                            xfk = '../../image/ico-notVip.png';
+                        }
+                        var string = '<tr>\
+                            <td class="userImg">\
+                                <img src="'+$api.reqUrl + data.list[i].user_img+'" alt="">\
+                            </td>\
+                            <td>'+ data.list[i].user_name +'</td>\
+                            <td>'+ $api.hidePhoneAsStar(data.list[i].user_phone) +'</td>\
+                            <td class="vip" style="margin-right:5px;">\
+                                <img src="'+zzk+'" alt="">\
+                            </td>\
+                            <td class="vip">\
+                                <img src="'+xfk+'" alt="">\
+                            </td>\
+                            <td class="rightDate">'+ data.list[i].user_date.split(' ')[0] +'</td>\
+                        </tr>'
+
+                        $('#list').append(string);
+                    }
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+          });
+
+      }
+  </script>
+  </html>

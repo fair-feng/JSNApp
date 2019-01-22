@@ -1,0 +1,368 @@
+/* global.css */
+*{
+    margin: 0;
+    padding: 0;
+    font-style: normal;
+}
+
+body{
+    margin: 0;
+    background: #fff;
+}
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+h1,h2,h3,h4,h5,h6 {
+	margin: 0;
+	font-weight: normal;
+}
+ul{
+	margin: 0;
+	padding: 0;
+}
+li{
+	list-style: none;
+}
+a {
+	text-decoration: none;
+}
+
+input,
+textarea,
+button,
+select {
+    /* 轮廓 */
+	outline: none;
+	border: none;
+	background-color: transparent;
+}
+/* 禁止textarea的拉伸 */
+textarea {
+	resize: none;
+}
+.hide_s{
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
+}
+/* ****************************浮动部分**************************** */
+/* 清除浮动 */
+.clearfix:after{
+    content:"";
+    height:0;
+    line-height:0;
+    display:block;
+    /* visibility:hidden; */
+    clear:both
+}
+.clearfix{
+    /* 为了兼容IE */
+    zoom:1;
+}
+
+.pull-left {
+	float: left;
+}
+
+.pull-right {
+	float: right;
+}
+
+.center{
+    width: 95%;
+    margin: 0 auto;
+}
+.baiColor {
+	color: #fff !important;
+}
+._width{
+	width: 95%;
+	margin: 0 auto;
+}
+/* 和背景颜色保持一致的高10px的线 */
+.kong{
+	width: 100%;
+	height: 5px;
+	/* 和背景颜色保持一致 */
+	background:#F6F6F6;
+}
+/* 高1px的白线 */
+.xian{
+	width: 100%;
+	height: 1px;
+	border-bottom: 1px solid #F6F6F6;
+}
+
+/*                                         显示...                                      */
+/* 显示80px之后用...代替 */
+.ellipsis0{
+	width: 80px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+/* 显示几行之后用...代替 */
+.ellipsis01{
+	width: 100%;
+	overflow:hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+}
+/* display: inline-block;
+	max-width:120px;
+	overflow: hidden;
+	text-overflow: ellipsis; */
+.ellipsis02{
+	width: 100%;
+	overflow:hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+.ellipsis03{
+	width: 100%;
+	overflow:hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+}
+
+/* ***************************提交按钮**************************** */
+.button {
+	display: block;
+    width: 100%;
+    height: 45px;
+    line-height: 40px;
+    font-size: 18px;
+    color: #fff;
+	text-align: center;
+	 background: -webkit-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: -o-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: -moz-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+}
+/* input框的默认值 */
+input{
+	padding-left: 8px;
+	width: 100%;
+	height: 100%;
+}
+input::-webkit-input-placeholder {
+	/* WebKit browsers */
+	color: #D9D9D9;
+	font-size: 12px;
+}
+
+input:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18 */
+	color: #D9D9D9;
+	font-size: 12px;
+}
+
+input::-moz-placeholder {
+	/* Mozilla Firefox 19+ */
+	color: #D9D9D9;
+	font-size: 12px;
+}
+
+input:-ms-input-placeholder {
+	/* Internet Explorer 10+ */
+	color: #D9D9D9;
+	font-size: 12px;
+}
+
+
+
+
+/*========字体引用（华康少女简体w5.TTC）==========*/
+@font-face{
+	/*font-size: 10px;
+	font-style: normal;
+	font-family:"HKSNJT.TTC";
+	src: url("../font/HKSNJT.TTC");*/
+}
+
+/******************************图标引用******************************/
+
+/*字体图标库*/
+@font-face {
+  font-family: 'iconfont';  /* project id 515718 */
+  src: url('//at.alicdn.com/t/font_515718_ybupntk3m84r6bt9.eot');
+  src: url('//at.alicdn.com/t/font_515718_ybupntk3m84r6bt9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_515718_ybupntk3m84r6bt9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_515718_ybupntk3m84r6bt9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_515718_ybupntk3m84r6bt9.svg#iconfont') format('svg');
+}
+.iconfont {
+	font-family: "iconfont" !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-width: 0.2px;
+	-moz-osx-font-smoothing: grayscale;
+}
+  /*头部渐变色*/
+.header_bg{
+	  /*radial*/
+	  background: -webkit-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: -o-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: -moz-linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+	  background: linear-gradient(left,rgb(38,175,238), rgb(0,160,233));
+}
+/*主题色蓝色*/
+.blue{
+	color: #00ABD6;
+}
+  /*字体渐变*/
+
+/*底部*/
+.top_bottom{
+	/*display: inline-block;*/
+	/*background: -webkit-linear-gradient(top,#00a0e9,#26afee);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;*/
+	/*color: #10B0D8;*/
+}
+/*左右*/
+.left_right{
+    display: inline-block;
+    background: -webkit-gradient(linear, left center, right center, from(rgb(50,134,237)), to(rgb(69,171,239)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.graybg{
+	position: fixed;
+ 	width: 100%;
+ 	height: 100%;
+ 	z-index: -1;
+	background: #F6F6F6;
+}
+/* 包含头部的大标签 */
+.header {
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 999;
+	width: 100%;
+	height: 40px;
+	/*border-bottom: solid  1px #eee;*/
+	color: #fff;
+}
+/* 头部左侧 */
+.header .header_left {
+	position: absolute;
+	left: 12px;
+	top: 12px;
+	width:150px;
+	text-align:left;
+	z-index: -1;
+}
+/* 头部中间 */
+.header .header_center {
+	position: absolute;
+	left: 50%;
+	top: 10px;
+	width: 200px;
+	text-align: center;
+	margin-left: -100px;
+	color: #fff;
+}
+/* 头部右侧 */
+.header .header_right {
+	position: absolute;
+	right: 12px;
+	top: 12px;
+	width: 50%;
+	text-align: right;
+	z-index: -1;
+	font-size: 14px;
+}
+/*头部--->左图标	右input */
+/*背景颜色;字体大小;字体颜色*/
+.header .header_input{
+	position: absolute;
+	left: 10%;
+	top: 10px;
+	width: 70%;
+	height: 24px;
+}
+
+/*底部footer*/
+.footer {
+	position: fixed !important;
+	left: 0;
+	bottom: 0;
+	z-index: 50;
+	background: #fff;
+	width: 100%;
+	height: 50px;
+	padding-top: 5px;
+	display: flex;
+	border-top: solid 1px #ddd;
+	margin-bottom: -8px;
+}
+
+.footer .footer_each,.footers .footer_each {
+	position: relative;
+	width: 50%;
+	height: 50px;
+	justify-content: space-around;
+}
+
+.footer .footer_each p{
+	margin: 0;
+	text-align: center;
+	color: #000;
+	font-size: 12px;
+}
+.footer .footer_each p:last-child{
+	/*margin-top: 1px;*/
+	line-height: 15px;
+}
+.footer .footer_each a{
+	display: block;
+}
+.footer .footer_each p img {
+	width: 26px;
+	height: 26px;
+	margin-bottom: 5px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.footer .footer_each .footer_action p,
+.footer .footer_each .footer_action p i{
+	color:#00ABD6 !important;
+}
+/*【当底部为iconfont图标时】*/
+
+.footer .footer_each p i {
+	font-size: 20px;
+	color:#10B0D8;
+}
+
+/*中部icon图标(当中部图标大于两边图标时【footer_center_img--footer_center_title】)*/
+
+.footer .footer_each .footer_center_img {
+	position: absolute;
+	top: -25px;
+	left: 50%;
+	width: 50px;
+	height: 50px;
+	margin-left: -25px;
+}
+
+.footer .footer_each .footer_center_img img {
+	width: 100%;
+	height: 100%;
+}
+
+.footer .footer_each .footer_center_title {
+	position: absolute;
+	bottom: 8px;
+	left: 50%;
+	margin-left: -12px;
+}

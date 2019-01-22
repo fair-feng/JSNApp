@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>商品详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/swiper-4.3.3.min.css">
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 42px;
+            background: rgba(0, 0, 0, .1);
+            z-index: 999;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 5px;
+            left: 15px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            margin-top: 5px;
+            color: #fff;
+            z-index: 999;
+            border-radius: 50%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        header .center {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+
+        header .search {
+            display: none;
+            transition: all 2s linear;
+            padding-top: 6px;
+        }
+
+        header .search .left {
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+        }
+
+        header .search .center {
+            height: 19px;
+            line-height: 19px;
+            padding: 5px 0;
+            width: 238px;
+            background: #fff;
+            border-radius: 5px;
+            color: #949494;
+            margin: 0 auto;
+        }
+
+        header .search .center i {
+            font-size: 17px;
+            vertical-align: middle;
+        }
+
+        header .search .center input {
+            margin-left: 10px;
+            outline: none;
+            width: 190px;
+            font-size: 13px;
+        }
+
+        header .right {
+            color: #fff;
+            position: absolute;
+            bottom: 5px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            text-align: center;
+        }
+
+        header .right i {
+            color: #FFF;
+            font-size: 16px;
+        }
+
+        .wrapper {
+            margin-bottom: 48px;
+        }
+
+        .swiper-container .swiper-slide {
+            width: 100%;
+            height: 324px;
+        }
+
+        .swiper-container .swiper-slide img {
+            width: 100%;
+            height: 100%;
+        }
+        /* 商品信息 */
+
+        .goods_info {
+            padding: .9rem;
+            border-bottom: 1px solid #F3F3F3;
+            box-shadow: 0 -5px 15px #e8e8e8;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            margin-top: 10px;
+        }
+
+        .goods_info .title {
+            line-height: 24px;
+            width: 100%;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            font-size: 16px;
+            color: #434343;
+        }
+
+        .goods_info .value {
+            margin-top: 12px;
+            font-size: 18px;
+            color: #EE597D;
+        }
+
+        .goods_info .info {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #A4A4A4;
+            font-size: 12px;
+        }
+        /* 规格等 */
+
+        .serverUls {
+            color: #636363;
+            font-size: 12px;
+        }
+
+        .serverUls .number {
+            border-top: 12px solid #f8f8f8;
+        }
+
+        .serverUls li {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            padding: 10px 14px;
+        }
+
+        .serverUls .pj {
+            border-top: 12px solid #f8f8f8;
+        }
+        /* 评价 */
+
+        .evaluation li {
+            display: -webkit-flex;
+            display: flex;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: #464646;
+            border-bottom: 1px solid #F3F3F3;
+        }
+
+        /*.evaluation .userLogin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }*/
+
+        .evaluation .right {
+            width: 100%;
+            margin-left: 14px;
+        }
+
+        .evaluation .right .commentsImg {
+            margin-top: 20px;
+            margin-bottom: 3px;
+        }
+
+        .evaluation .right .commentsImg img {
+            width: 94px;
+            height: 94px;
+        }
+
+        /*.evaluation .right .userId {
+            padding: 4px 0;
+        }*/
+
+        .evaluation .right .date {
+            float: right;
+        }
+        /* 新评价 */
+
+        .evaluations {
+            overflow: scroll;
+            width: 100vw;
+        }
+
+        .evaluations .wrap {
+            display: flex;
+        }
+
+        .evaluations li {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            min-width: 300px;
+            margin-left: 10px;
+        }
+
+        .evaluations li:first-child {
+            margin-left: 20px;
+        }
+
+        .evaluations li:last-child {
+            border-right: 20px solid #fff;
+        }
+        .evaluations .con {
+            font-size: 12px;
+            margin-top: 15px;
+            line-height: 20px;
+            color: #6b6b6b;
+        }
+        .evaluations .top icon {
+            color: #d3b56f;
+            font-size: 12px;
+        }
+        .evaluations .top .logo {
+            width: 33px;
+            height: 33px;
+            border-radius: 100%;
+            vertical-align: middle;
+        }
+
+        .evaluations .top .name {
+            vertical-align: middle;
+            font-size: 14px;
+            margin-left: 10px;
+            margin-right: 15px;
+        }
+        /* 商品详情 */
+
+        .goods_details .title {
+            text-align: center;
+            padding: 10px 0;
+            color: #464646;
+            background: url('../image/goodsDetailsBg.png') no-repeat;
+            background-size: 75% 20%;
+            background-position: 50% 16px;
+        }
+
+        .goods_details .imgs img {
+            width: 100%;
+            font-size: 0;
+        }
+        /* footer */
+
+        #footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            border-top: 1px solid #F3F3F3;
+        }
+
+        #footer .server {
+            margin-left: 25px;
+        }
+
+        #footer .server,
+        #footer .collection {
+            color: #767676;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #footer .goodsCar span {
+            font-size: 14px;
+            height: 45px;
+            line-height: 45px;
+            padding: 0 30px;
+        }
+
+        #footer i {
+            font-size: 24px;
+        }
+
+        #footer .goodsCar {
+            display: -webkit-flex;
+            display: flex;
+        }
+
+        #footer .goodsCar .joinCar {
+            color: #fff;
+            background: #333333;
+        }
+
+        #footer .goodsCar .buy {
+            color: #fff;
+            background: #d3b56f;
+        }
+
+        .morePj {
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="left iconfont icon-fanhui" tapmode onclick="api.closeWin();">
+        </div>
+        </div>
+        <div class="center">商品详情</div>
+        <div class="right iconfont icon-fenxiang" tapmode onclick="fnShare();">
+        </div>
+    </header>
+    <div class="wrapper">
+        <!-- 轮播图 -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+            </div>
+        </div>
+        <!-- 商品信息 -->
+        <div class="goods_info">
+            <p class="title"></p>
+            <p class="value">￥:</p>
+            <p class="info">
+                <span>运费：</span>
+                <span>售：</span>
+                <span>郑州</span>
+            </p>
+        </div>
+        <!-- 服务、规格、评价 -->
+        <ul class="serverUls">
+            <li class="number" onclick="fnOpenStateBlock()">
+                <span>选择数量：</span>
+                <span class="right"><i class="iconfont icon-gengduo"></i></span>
+            </li>
+            <li class="pj">
+                <p>用户评价<span></span></p>
+                <span class="right" onclick="fnSeeMoreComments()">
+                <i class="pubColor iconfont icon-gengduo"></i>
+                </span>
+            </li>
+        </ul>
+        <!-- 用户评价 -->
+        <ul class="evaluation">
+        </ul>
+        <div class="evaluations">
+            <ul class="wrap">
+                <!-- <li>
+                    <div class="top">
+                        <img class="logo" src="../image/bigTz.png" alt="">
+                        <span class="name">Saff张</span>
+                        <icon class="iconfont icon-yduixingxingshixin"></icon>
+                    </div>
+                    <p class="con line-2">物流快物流快物流快物流快物流快物流快物流快物流快物流快物快物流快物流快</p>
+                </li> -->
+            </ul>
+        </div>
+        <p class="morePj pubColor" onclick="fnSeeMoreComments()">
+            <span>查看更多</span>
+            <icon class="iconfont icon-sanjiaoright"></icon>
+        </p>
+
+        <!-- 商品详情 -->
+        <div class="goods_details">
+            <div class="title">
+                <span>商品详情</span>
+            </div>
+            <!-- <video  width="100%" controls>
+                 <source id="video" src="" type="video/mp4">
+            </video> -->
+            <div id="videoBlock">
+                <!-- <video id="video" controls width="100%" src=""></video> -->
+            </div>
+            <div class="imgs">
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+        <div class="server" onclick="fnOpenServer()">
+            <i class="iconfont icon-kefu-tianchong"></i>
+        </div>
+        <div class="collection" onclick="fncollection()">
+            <i class="iconfont icon-xin"></i>
+        </div>
+        <div class="goodsCar">
+            <span class="joinCar" onclick="fnJoinGoodsCar()">加入购物车</span>
+            <span class="buy" onclick="fnBuyGoods()">立即购买</span>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/swiper-4.3.3.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 防止header与状态栏重叠
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // 初始化数据
+        fnInitData();
+        initSwiper();
+        // 商品ID
+        // var goods_id = api.pageParam.goods_id;
+    };
+
+    // 收藏
+    function fncollection() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Goods/add_collect',
+            method: 'post',
+            data: {
+                values: {
+                    id: api.pageParam.goods_id,
+                    token: $api.getStorage('userToken')
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'middle'
+                });
+                // 判断是否已经收藏，添加相应样式
+                if (ret.data == 1) {
+                    $api.css($api.dom('.collection'), 'color:#E41849;');
+                } else {
+                    $api.css($api.dom('.collection'), 'color:#767676;');
+                }
+            }
+        });
+    }
+    // 规格
+    var guigeData;
+
+    function fnOpenStateBlock() {
+        api.openFrame({
+            name: 'guige_frm',
+            url: './guige_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                goods_id: api.pageParam.goods_id,
+                typeId: 1, // 立即购买
+                type: api.pageParam.vipType, // 区分是否是从vip商品进来，隐藏+-(1.至尊卡购买，2.小分卡购买)
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.1)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+
+    }
+    // 查看更多评论
+    function fnSeeMoreComments() {
+        api.openWin({
+            name: 'moreComments_win',
+            url: './moreComments_win.html',
+            pageParam: {
+                userId: api.pageParam.goods_id
+            }
+        });
+
+    }
+    // 初始化数据
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Goods/goods_xq',
+            method: 'post',
+            data: {
+                values: {
+                    id: api.pageParam.goods_id,
+                    token: $api.getStorage('userToken')
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                // console.log(JSON.stringify(ret));
+                var data = ret.data;
+                var dataGoods = ret.data.goods;
+                var scrollGoodsImgs = dataGoods.goods_image.split(',');
+                // 轮播图
+                var swiperDom = $api.dom('.swiper-container .swiper-wrapper');
+                for (var i = 0; i < scrollGoodsImgs.length; i++) {
+                    var string = "<div class=\"swiper-slide\"><img src=\"" +
+                        ($api.reqUrl + scrollGoodsImgs[i]) + "\" alt=\"\"></div>"
+                    $api.append(swiperDom, string);
+                }
+                // 商品信息、价格等
+                $api.text($api.dom('.goods_info .title'), dataGoods.goods_name);
+                $api.text($api.dom('.goods_info .value'), '￥' + dataGoods.goods_price);
+                $api.text($api.eq($api.dom('.goods_info .info'), 1), '运费：' + dataGoods.goods_postage);
+                $api.text($api.eq($api.dom('.goods_info .info'), 2), '售：' + (Number(dataGoods.goods_sales_f) + Number(dataGoods.goods_sales)));
+                $api.text($api.eq($api.dom('.goods_info .info'), 3), '地址：' + dataGoods.goods_city);
+                // initSwiper();
+                // 用户评论
+                var evaluate = data.evaluate;
+                for (var i = 0; i < evaluate.length; i++) {
+                    var string;
+                        // string = '<li>\
+                        //     <img class="userLogin" src="'+$api.reqUrl + evaluate[i].user_img+'" alt="">\
+                        //     <div class="right">\
+                        //         <span class="userId">'+evaluate[i].user_name+'</span>\
+                        //         <p>'+evaluate[i].e_content+'</p>\
+                        //         <div class="commentsImg">\
+                        //             <img src="'+$api.reqUrl + evaluate[i].e_img+'" alt="">\
+                        //         </div>\
+                        //         <span class="date">'+evaluate[i].e_date+'</span>\
+                        //     </div>\
+                        // </li>'
+                        var start = '';
+                        for (var j = 0; j < evaluate[i].e_xs; j++) {
+                            start += '<icon class="iconfont icon-yduixingxingshixin"></icon>'
+                        }
+                        for (var j = 0; j < 5 - evaluate[i].e_xs; j++) {
+                            start += '<icon class="iconfont icon-yduixingxingkongxin"></icon>'
+                        }
+                        string = '<li>\
+                            <div class="top">\
+                                <img class="logo" src="'+$api.reqUrl + evaluate[i].user_img+'" alt="">\
+                                <span class="name">'+evaluate[i].user_name+'</span>'+start+'</div>\
+                            <p class="con line-2">'+evaluate[i].e_content+'</p>\
+                        </li>';
+                    $api.append($api.dom('.evaluations .wrap'), string);
+                }
+                // 视频
+                if (dataGoods.video_path) {
+                    var string = '<video id="video" autoplay controls width="100%" src="' + $api.reqUrl + dataGoods.video_path + '"></video>';
+                    $api.append($api.dom('#videoBlock'), string);
+                }
+                // 图片详情
+                $api.html($api.dom('.goods_details .imgs'), dataGoods.goods_param);
+                // 是否收藏
+                if (data.collect == 1) {
+                    $api.css($api.dom('.collection'), 'color:#E41849;');
+                } else {
+                    $api.css($api.dom('.collection'), 'color:#767676;');
+                }
+            }
+        });
+    }
+
+    function initSwiper() {
+        // swiper
+        var mySwiper = new Swiper('.swiper-container', {
+            autoplay: true, //可选选项，自动滑动
+            observer: true, //修改swiper自己或子元素时，自动初始化swiper
+            　　　　observeParents: true, //修改swiper的父元素时，自动初始化swiper
+        });
+    }
+    // 加入购物车
+    function fnJoinGoodsCar() {
+        api.openFrame({
+            name: 'guige_frm',
+            url: './guige_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                goods_id: api.pageParam.goods_id,
+                typeId: 2, // 加入购物车
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.5)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    }
+    // 立即购买
+    function fnBuyGoods() {
+        api.openFrame({
+            name: 'guige_frm',
+            url: './guige_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                goods_id: api.pageParam.goods_id,
+                typeId: 1, // 立即购买
+                type: api.pageParam.type, // 此商品是至尊卡商品，隐藏数量加减
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.5)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    }
+    // 微信分享 type 分享方式
+    function fnwxShare(type) {
+        var wx = api.require('wx');
+        var userInvita = $api.getStorage('userInvita');
+        wx.shareWebpage({
+            apiKey: '',
+            scene: type,
+            title: '君施秾商城',
+            description: '君施秾是一款商城类APP',
+            thumb: 'widget://image/APPLogo@2x.png',
+            contentUrl: $api.reqUrl + 'Home/Hreg/index/invita/' + userInvita
+        }, function(ret, err) {
+            if (ret.status) {
+                api.toast({
+                    msg: '分享成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.toast({
+                    msg: '取消分享',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+
+    // 弹出分享选择框
+    function fnShare() {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.actionMenu({
+            tapClose: true,
+            rect: {
+                w: 300,
+                h: 150
+            },
+            items: [{
+                text: '微信好友',
+                icon: 'widget://image/share/wx.png'
+            }, {
+                text: '朋友圈',
+                icon: 'widget://image/share/wx-circle.png'
+            }, {
+                text: '微信收藏',
+                icon: 'widget://image/share/qq-friend.png'
+            }],
+            styles: {
+                bg: '#FFF',
+                corner: 10,
+                column: 3,
+                horizontalSpace: 15,
+                verticalSpace: 30,
+                itemText: {
+                    color: '#000',
+                    size: 15,
+                    marginT: 10
+                },
+                itemIcon: {
+                    size: 30
+                }
+            }
+        }, function(ret) {
+            var shareType = 'session';
+            if (ret.index == 0) {
+                shareType = 'session';
+            } else if (ret.index == 1) {
+                shareType = 'timeline';
+            } else if (ret.index == 2) {
+                shareType = 'favorite';
+            }
+            fnwxShare(shareType);
+        });
+    }
+
+    // 打开客服
+    function fnOpenServer() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Chat/pp_servi',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    gid: api.pageParam.goods_id
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                var data = ret.data;
+                api.openWin({
+                    name: 'servers_win',
+                    url: './servers_win.html',
+                    pageParam: {
+                        group_id: ret.data.group_id
+                    }
+                });
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+</script>
+
+</html>

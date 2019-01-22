@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>物流详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+        /* 单号信息 */
+
+        .orderTitle {
+            display: -webkit-flex;
+            display: flex;
+            padding: 5px 0 3px;
+            border-bottom: 2px solid #F3F3F3;
+        }
+
+        .orderTitle>img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .orderTitle .rightText {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin-left: 19px;
+        }
+
+        .rightText .title {
+            font-size: 16px;
+        }
+        /* 物流跟踪 */
+
+        .goodsText {
+            padding: 10px 0;
+            border-bottom: 1px solid #F3F3F3;
+            color: #313131;
+        }
+        /* 流程 */
+
+        .goodsProcess {
+            padding: 10px 15px;
+        }
+        .goodsProcess .flex:first-child {
+            display: none;
+        }
+        .goodsProcess .date {
+            text-align: right;
+            margin-right: 20px;
+        }
+
+        .goodsProcess .date h3 {
+            min-width: 50px;
+            font-weight: 100;
+            font-size: 18px;
+        }
+
+        /*.goodsProcess .date span {
+            font-size: 12px;
+        }*/
+
+        .goodsProcess .text {
+            position: relative;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 80%;
+        }
+        .goodsProcess .text p {
+            position: absolute;
+            margin-top: 5px;
+        }
+        /* 线 */
+        .goodsProcess .line {
+            width: 87px;
+            height: 40px;
+            border-right: 1px dashed #E4084B;
+            margin: 5px 0;
+        }
+        /* 无数据蒙版 */
+        .noComments {
+            display: none;
+            margin-top: 35vh;
+        }
+
+        .noComments .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noComments .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+        #wrapper {
+            color: #4C4D4D;
+            font-size: 14px;
+        }
+
+        #wrapper>div {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .publicRed {
+            background: #E4084B;
+            color: #fff;
+            font-size: 12px;
+            border-radius: 50%;
+            width: 35px;
+            min-width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .publicRed.iconfont {
+            font-size: 36px;
+            color: #E4084B;
+            background: none;
+        }
+        .flex {
+            display: -webkit-flex;
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- 单号信息 -->
+        <div class="orderTitle">
+            <img src="" alt="">
+            <div class="rightText">
+                <span class="title"></span>
+                <p>运送单号：<span class="number"></span></p>
+            </div>
+        </div>
+        <div class="goodsText">物流跟踪</div>
+        <!-- 物流流程 -->
+        <div class="goodsProcess">
+            <div class="flex">
+                <div class="date">
+                    <h3></h3>
+                </div>
+                <span class="publicRed">收</span>
+                <div class="text">
+                    <p class="address"></p>
+                </div>
+            </div>
+            <!-- <div class="line"></div>
+            <div class="flex">
+                <div class="date">
+                    <h3>07-05</h3>
+                </div>
+                <span class="publicRed iconfont icon-tijiaochenggongduigou"></span>
+                <div class="text">
+                <span>已出库</span>
+                    <p>[收货地址]</p>
+                </div>
+            </div>
+            <div class="line"></div> -->
+            <!-- 暂无物流 -->
+            <div class="noComments">
+                <div class="block">
+                    <img src="../../image/notComments@2x.png" alt="">
+                    <span>暂无物流信息</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+    };
+
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Express/index',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: api.pageParam.o_id
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                // 返回为空
+                if(ret.code == 1 && ret.data.e.State-0 == 0){
+                    var data = ret.data;
+                    // 设置商品图片/快递名称、单号
+                    $('.orderTitle > img').attr('src',$api.reqUrl + data.order.goods_img);
+                    $('.rightText .title').text(data.exp.exp_name);
+                    $('.rightText .number').text(data.e.LogisticCode);
+                    // 展示无物流效果
+                    $('.noComments').css('display','block');
+                }
+                if(ret.code == 1 && ret.data.e.State-0 >0){
+                    var data = ret.data;
+                    var traces = ret.data.e.Traces; // 流程对象
+                    var line = '<div class="line"></div>'// 线
+                    $('.goodsProcess .flex').eq(0).css('display','flex');
+                    // 设置商品图片/快递名称、单号
+                    $('.orderTitle > img').attr('src',$api.reqUrl + data.order.goods_img);
+                    $('.rightText .title').text(data.exp.exp_name);
+                    $('.rightText .number').text(data.e.LogisticCode);
+                    // 设置收货地址
+                    $('.address').text('[收货地址]' + data.order.s_city_xq);
+                    for (var i = 0; i < traces.length; i++) {
+                        //  2018-07-05 22:33:48，
+                        //  获取月-日   时:分
+                        var dateAll = traces[i].AcceptTime.split(' ')[0].split('-');
+                        var date = dateAll[1] + '-' + dateAll[2];
+                        var timeAll = traces[i].AcceptTime.split(' ')[1].split(':');
+                        var time =timeAll[1] + ':' + timeAll[2];
+                        // 判断圆圈的内容
+                        var roundCon = '';
+                        // 判断状态
+                        var goodsType = '已出库';
+                        if(data.e.State == 2) {
+                            roundCon = "<span class=\"publicRed\">" + time + "</span>";
+                        }else if(data.e.State == 3){
+                            if(i != traces.length-1){
+                                roundCon = "<span class=\"publicRed\">" + time + "</span>";
+                            } else {
+                                roundCon = "<span class=\"publicRed iconfont icon-tijiaochenggongduigou\"></span>";
+                                goodsType = '已签收';
+                            }
+                        }
+                        // var string =
+                        // `<div class="flex">
+                        //     <div class="date">
+                        //         <h3>${date}</h3>
+                        //     </div>`
+                        //     <span class="publicRed">收</span>
+                        //     `<div class="text">
+                        //         <span>${goodsType}</span>
+                        //         <p>${traces[i].AcceptStation}</p>
+                        //     </div>
+                        // </div>`;
+                        var string =  line + "<div class=\"flex\"><div class=\"date\"><h3>" + date + "</h3></div>" + roundCon +
+                        "<div class=\"text\"><span>" + goodsType + "</span><p>" + traces[i].AcceptStation + "</p></div></div>";
+                        $('.goodsProcess').append(string);
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</html>

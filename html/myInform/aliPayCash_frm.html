@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>支付宝提现</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        .row {
+            background: #fff;
+            width: auto;
+            /*height: 70px;*/
+            box-sizing: border-box;
+            /*margin-left: 15px;*/
+            /*margin-right: 15px;*/
+            padding: 18px 15px;
+            border-bottom: 1px solid rgb(230, 230, 230);
+            /*border-bottom: 1px solid #E4084B;*/
+        }
+
+        .row span {
+            color: #2B2B2B;
+            font-size: 15px;
+            vertical-align: bottom;
+        }
+
+        .btn {
+            width: auto;
+            height: 40px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-top: 150px;
+            background-color: #38596C;
+            line-height: 40px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .promptInfo {
+            color: #404040;
+            font-size: 12px;
+        }
+
+        .promptInfo i {
+            color: #E4084B;
+        }
+
+        .wrapper input {
+            outline: none;
+            float: right;
+            text-align: right;
+            color: #959595;
+            font-size: 12px;
+        }
+        .wrapper > .text {
+            padding: 0 15px;
+            color: #959595;
+            font-size: 12px;
+            margin-top: 25px;
+        }
+        .wrapper > .text p {
+            line-height: 24px;
+        }
+        .wrapper > .text p:nth-of-type(1) {
+            margin-top: 10px;
+        }
+        .red {
+            color: #E4084B;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="row">
+            <div class="promptInfo">
+                <i class="iconfont icon-weixian"></i>
+                <span>账户并非支付宝绑定的手机号.请注意区分</span>
+            </div>
+        </div>
+        <div class="row">
+            <span>账号：</span>
+            <input id="account" class="input" maxlength="50" type="text" placeholder="请输入您的支付宝账号">
+        </div>
+        <div class="row">
+            <span>姓名：</span>
+            <input id="username" class="input" type="text" placeholder="请输入绑定支付宝真实姓名">
+        </div>
+        <div class="btn" tapmode="highlight" onclick="fnConfirmInfo();">确认信息</div>
+        <div class="text">
+            <span>注意：</span>
+            <p>1.支付宝信息必须<span class="red">实名认证</span>，否则无法提现申请.</p>
+            <p>2.若支付宝账户为<span class="red">邮箱</span>，则不能填写支付宝绑定手机号，否则无法提现申请.</p>
+            <p>3.请认真核对填写信息，账户信息<span class="red">一旦提交,不可自行更改</span>必须联系在线客服人工修改.</p>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+    };
+    //   确认信息
+    function fnConfirmInfo() {
+        var account = $('#account').val();
+        var username = $('#username').val();
+        if(account == ''){
+            api.toast({
+                msg: '请输入账号',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        if(username == ''){
+            api.toast({
+                msg: '请输入姓名',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/bind_zfb',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    number: account,
+                    name: username,
+                },
+            }
+        },function(ret, err){
+            // 清空
+            $('#account').val('');
+            $('#username').val('');
+            if(ret.code == 1){
+                api.toast({
+                    msg: '绑定成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                setTimeout(function () {
+                    api.closeWin();
+                },500);
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+
+    }
+</script>
+
+</html>

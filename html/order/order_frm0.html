@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>全部订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        #wrapper .top,
+        #wrapper .bottom {
+            padding: 5px 15px 7px;
+        }
+
+        #wrapper .top {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #F3F3F3;
+        }
+
+        #wrapper .top .right {
+            position: relative;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 15px;
+            font-size: 14px;
+        }
+
+        .right .text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            color: #414141;
+            line-height: 22px;
+        }
+
+        .right .val {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            color: #232323;
+            margin-right: 5px;
+        }
+        .right .val .oneVal {
+            color: #E4084B;
+        }
+
+        .right .totalVal {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #232323;
+        }
+        .right .typeImg {
+            position: absolute;
+            right: 0;
+            bottom: 15px;
+            width: 52px;
+            height: 52px;
+        }
+        .top>img {
+            width: 100px;
+            min-width: 100px;
+            height: 100px;
+            border-radius: 3px;
+        }
+        #wrapper .bottom {
+            border-bottom: 4px solid #F3F3F3;
+            text-align: right;
+        }
+        #wrapper .bottom span {
+            padding: 5px 15px;
+            border: 1px solid #38596C;
+            border-radius: 27px;
+            font-size: 14px;
+            color: #454545;
+            text-align: center;
+            min-width: 40px;
+            margin-left: 10px;
+        }
+        /* 暂无数据 */
+        .noComments {
+            display: none;
+            margin-top: 35vh;
+        }
+
+        .noComments .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noComments .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="wrapper">
+        <!-- <li>
+            <div class="top">
+                <img src="../../image/swiper-01.png" alt="">
+                <div class="right">
+                    <p class="text">[为你推荐]沪美竹炭黑面膜控油清洁提亮肤色收缩</p>
+                    <div class="val">
+                        <p>￥：<span class="oneVal">164</span></p>
+                        <p>X<span class="num">1</span></p>
+                    </div>
+                    <div class="totalVal">
+                        <p>合计：￥<span class="value">164</span></p>
+                        </p>（含运费￥：<span class="freight">25</span>）</p>
+                    </div>
+                    <img class="typeImg" src="../../image/order_0@2x.png" alt="">
+                </div>
+            </div>
+            <div class="bottom">
+                <span class="btn1" onclick="fnCancelOrder()">取消订单</span>
+                <span class="btn2" onclick="fnpayMoney()">付款</span>
+            </div>
+        </li> -->
+    </ul>
+    <!-- 暂无评论 -->
+    <div class="noComments">
+        <div class="block">
+            <img src="../../image/notComments@2x.png" alt="">
+            <span>暂无数据</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+    };
+    // 在订单详情页取消订单时回调此函数
+    function fnReturnInitData() {
+        $('#wrapper').html('');
+        fnInitData();
+    }
+    // 初始化数据请求
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_order',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    type: '',
+                },
+            }
+        },function(ret, err){
+                if(ret.code ==1){
+                    var data = ret.data;
+                    for (var i = 0; i < data.length; i++) {
+                        // var string = `<li>
+                        //     <div class="top">
+                        //         <img src="${$api.reqUrl + data[i].goods_img }" alt="">
+                        //         <div class="right">
+                        //             <p class="text">${data[i].goods_name}</p>
+                        //             <div class="val">
+                        //                 <p>￥：<span class="oneVal">${data[i].goods_price}</span></p>
+                        //                 <p>X<span class="num">${data[i].o_num}</span></p>
+                        //             </div>
+                        //             <div class="totalVal">
+                        //                 <p>合计：￥<span class="value">${data[i].o_money}</span></p>
+                        //                 <p>（含运费￥：<span class="freight">${data[i].e_freight}</span>）</p>
+                        //             </div>
+                        //             <img class="typeImg" src="../../image/order_${data[i].o_status}@2x.png" alt="">
+                        //         </div>
+                        //     </div>
+                        //     <div class="bottom">${goodsTypeString}</div>
+                        // </li>`;
+                        //  分类判断
+                        var goodsType = data[i].o_status;
+                        var goodsTypeString = '';
+                        if(goodsType == 0){// 待付款
+                            // goodsTypeString = "<span class='btn1' onclick="fndsa()">取消订单</span><span class='btn2'>付款</span>";
+                            goodsTypeString = "<span class=\"btn1\" onclick=\"fnDalog(this," + data[i].o_id + ")\">取消订单</span><span class=\"btn2\" onclick=\"fnSeeDetails("+ data[i].o_id + ")\">付款</span>";
+                        } else if(goodsType == 1) {// 待发货
+                            goodsTypeString = "<span class=\"btn1\" onclick=\"fnSeeDetails(" + data[i].o_id + ")\">查看详情</span>";
+                        } else if(goodsType == 4) {// 待收货
+                            goodsTypeString = "<span class=\"btn1\" onclick=\"fnSeeGoods(" + data[i].o_id + ")\">查看物流</span><span class=\"btn2\" onclick=\"fnConfirmGoods(" + data[i].o_id + ")\">确认收货</span>";
+                        } else if(goodsType == 5) {// 待评价
+                            goodsTypeString = "<span class=\"btn1\" onclick=\"fnSeeGoods(" + data[i].o_id + ")\">查看物流</span><span class=\"btn2\" onclick=\"fnEvaluation(" + data[i].o_id + ")\">去评价</span>";
+                        } else if(goodsType == 6) {// 已完成
+                            goodsTypeString = "<span class=\"btn1\" onclick=\"fnDalog(this,"+ data[i].o_id + ")\">删除订单</span>";
+                        }
+                        var string = "<li><div onclick=\"fnSeeDetails("+data[i].o_id+")\" class=\"top\"><img src=\"" + ($api.reqUrl + data[i].goods_img) +
+                        "\" alt=\"\"><div class=\"right\"><p class=\"text\">" + data[i].goods_name + "</p><div class=\"val\"><p>￥：<span class=\"oneVal\">" + data[i].goods_price +
+                         "</span></p><p>X<span class=\"num\">" + data[i].o_num + "</span></p></div><div class=\"totalVal\"><p>合计：￥<span class=\"value\">" + data[i].o_money +
+                         "</span></p><p>（含运费￥：<span class=\"freight\">" + data[i].e_freight + "</span>）</p></div><img class=\"typeImg\" src=\"../../image/order_" + data[i].o_status +
+                          "@2x.png\" alt=\"\"></div></div><div class=\"bottom\">" + goodsTypeString + "</div></li>";
+                        $('#wrapper').append(string);
+                    }
+                } else {
+                    $('.noComments').css('display','block');
+                }
+
+        });
+    }
+
+    // 取消订单、删除订单
+    function fnCancelOrder(that,paraO_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/del_order',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: paraO_id,
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code ==1){
+                    api.toast({
+                        msg: '操作成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    setTimeout(function () {
+                        $('#wrapper').html('');
+                        fnInitData();
+                        // 回调，刷新待付款订单的数据
+                        var jsfun2 = 'fnReturnInitData();';
+                        api.execScript({
+                            name: 'order_win',
+                            frameName: 'order_frm1',
+                            script: jsfun2
+                        });
+                    },500);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+    // 查看详情
+    function fnSeeDetails(paraO_id) {
+        api.openWin({
+            name: 'orderDetails_win',
+            url: './orderDetails_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+    // 查看物流
+    function fnSeeGoods(paraO_id) {
+        api.openWin({
+            name: 'logistics_win',
+            url: './logistics_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+    // 确认收货
+    function fnConfirmGoods(paraO_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/order_tic',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: paraO_id,
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                var data = ret.data;
+                if(ret.code == 1){
+                    api.toast({
+                        msg: '确认成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    // 重载数据
+                    setTimeout(function () {
+                        // 初始化数据请求
+                        $('#wrapper').html('');
+                        fnInitData();
+                    },500);
+                } else {
+                    api.toast({
+                        msg: data.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+    // 去评价
+    function fnEvaluation(paraO_id) {
+        api.openWin({
+            name: 'orderEvaluation_win',
+            url: './orderEvaluation_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+    // 取消、删除确认框
+    function fnDalog(that, paraO_id) {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: '提示',
+                content: '是否确认操作',
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 20,
+                    icon: 'widget://res/gou.png',
+                    iconSize: 40,
+                    titleSize: 14,
+                    titleColor: '#000'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#f3f3f3',
+                    color: '#E4084B',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#E4084B',
+                    size: 12,
+                    color: '#fff',
+                }
+            }
+        }, function(ret) {
+            // var dialogBox = api.require('dialogBox');
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            } else {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                fnCancelOrder(that, paraO_id);
+            }
+        });
+    }
+</script>
+
+</html>

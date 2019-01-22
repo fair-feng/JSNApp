@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>收入</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+        .date {
+            height: 38px;
+            line-height: 38px;
+            border-top: 1px solid #F3F3F3;
+        }
+        .date,
+        .list li {
+            padding: 0 15px;
+            background: #fff;
+            border-bottom: 1px solid #F3F3F3;
+        }
+        .list li {
+            background: #fff;
+        }
+        .list li .top,
+        .list li .bottom {
+            height: 38px;
+            line-height: 38px;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .list li span:first-child {}
+
+        .publicColor {
+            color: #E4084B;
+        }
+        /* 无数据 */
+        .noComments {
+            display: none;
+            margin-top: 35vh;
+        }
+        .noComments .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noComments .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+        /* 时间选择 */
+        .selectTime {
+            font-size: 14px;
+            background: #fff;
+            padding: 5px 0;
+        }
+        .selectTime > div {
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+        .selectTime button {
+            background: #E4084B;
+            color: #fff;
+            outline: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .goSearch button{
+            padding: 5px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 时间选择 -->
+    <div class="selectTime">
+        <div class="startTime">
+            <button onclick="fnSelectTimeBlock(this,1)">选择开始时间</button>
+            <span></span>
+        </div>
+        <div class="endTime">
+            <button onclick="fnSelectTimeBlock(this,0)">选择结束时间</button>
+            <span></span>
+        </div>
+        <div class="goSearch">
+            <button onclick="fnGoSearch()">确认搜索</button>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div class="date">收入明细</div>
+        <ul class="list">
+        </ul>
+    </div>
+    <!-- 暂无数据 -->
+    <div class="noComments">
+        <div class="block">
+            <img src="../../image/notComments@2x.png" alt="">
+            <span>暂无数据</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据
+        fnInitData()
+    };
+    // 初始化数据
+    function fnInitData(start,end) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Money/tm_list',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    type: 1,
+                    start: start,
+                    end: end
+                },
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret.code == 1) {
+                $('#wrapper').text('');
+                var data = ret.data;
+                var payType = ['','退款','下级返利'];
+                for (var item in data) {
+                    var nextData = data[item].next;
+                    // 添加年月
+                    var date = "<div class=\"date\">" + data[item].date + "</div>";
+                    $('#wrapper').append(date);
+                    // 添加条数信息
+                    for (var i = 0; i < nextData.length; i++) {
+                        var newData1 = nextData[i].ctime.split('-');
+                        var newData = newData1[1] + '-' + newData1[2];
+                        // 返利用户名
+                        var user_name;
+                        if(nextData[i].type != 1){
+                            user_name = nextData[i].user_name;
+                        } else {
+                            user_name = $api.getStorage('user_name');
+                        }
+                        // 返利商品名
+                        var goods_name;
+                        if(!nextData[i].goods_name.g_name){
+                            goods_name = '';
+                            string = '<ul class="list">\
+                                            <li>\
+                                                <div class="top">\
+                                                    <span>'+newData+'</span>\
+                                                    <span>'+user_name+'</span>\
+                                                    <span class="publicColor">+'+nextData[i].money+'元</span>\
+                                                </div>\
+                                            </li>\
+                                        </ul>';;
+                        } else {
+                            goods_name = nextData[i].goods_name.g_name;
+                            string = '<ul class="list">\
+                                            <li>\
+                                                <div class="top">\
+                                                    <span>'+newData+'</span>\
+                                                    <span>'+user_name+'</span>\
+                                                    <span class="publicColor">+'+nextData[i].money+'元</span>\
+                                                </div>\
+                                                <div class="bottom">\
+                                                    <span>商品名：</span>\
+                                                    <span>'+goods_name+'</span>\
+                                                </div>\
+                                            </li>\
+                                        </ul>';
+                        }
+                        var string;
+                        // 收入方式
+                        // <span>'+payType[nextData[i].type]+'</span>\
+                        $('#wrapper').append(string);
+                    }
+                }
+            } else {
+                $('.noComments').css('display','block');
+                api.toast({
+                    msg: '暂无数据',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+            searchBool = true;
+        });
+    }
+    // 时间选择框
+    var startTime = '';
+    var endTime = '';
+    function fnSelectTimeBlock(that,num) {
+        api.openPicker({
+            type: 'date_time',
+            date: '2018-01-01 00:00',
+            title: '选择时间'
+        }, function(ret, err) {
+            if (ret) {
+                var time = ret.year + '-' + ret.month + '-' + ret.day;
+                $(that).siblings('span').text(time);
+                if(num == 1){
+                    startTime = time;
+                } else {
+                    endTime = time;
+                }
+            }
+        });
+    }
+    var searchBool = true;
+    function fnGoSearch() {
+        if(startTime != '' && endTime != ''){
+            if(searchBool == true){
+                searchBool = false;
+                fnInitData(startTime,endTime);
+            } else {
+                api.toast({
+                    msg: '搜索中，请稍等',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        } else {
+            api.toast({
+                msg: '请选择时间',
+                duration: 2000,
+                location: 'bottom'
+            });
+        }
+    }
+</script>
+
+</html>

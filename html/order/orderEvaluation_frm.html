@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>订单评价</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            color: #6e6e6e;
+            background: #f8f8f8;
+        }
+
+        #wrapper {
+            padding: 3px 15px 0;
+        }
+        .card {
+            background: #fff;
+            border-radius: 5px;
+            padding: 10px 0;
+        }
+        .sayTextarea {
+            width: 94%;
+            height: 159px;
+            background: #fff;
+            padding: 10px 3%;
+            outline: none;
+            resize: none;
+        }
+        .sayBlock {
+            margin-top: 10px;
+        }
+        .title {
+            border-bottom: 1px solid #f8f8f8;
+            padding: 0 10px 10px;
+        }
+        /* 上传图片 */
+
+        .upData {
+            margin-top: 10px;
+        }
+
+        .upData .imgBlock img {
+            display: none;
+            width: 60px;
+            height: 60px;
+            margin-top: 10px;
+        }
+        .fnUpImg img {
+            width: 60px;
+            height: 60px;
+            margin-top: 10px;
+        }
+        .fnUpImg {
+            display: inline-block;
+            width: 85px;
+            height: 85px;
+            background: #fff;
+            text-align: center;
+            color: #999999;
+            font-size: 0;
+            vertical-align: top;
+        }
+
+        .fnUpImg .con {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .fnUpImg i {
+            font-size: 36px;
+        }
+
+        .fnUpImg span {
+            font-size: 14px;
+            color: #365365;
+            margin-top: 6px;
+        }
+
+        .imgBlock {
+            display: inline-block;
+        }
+        /* 星级选择 */
+
+        .starsList {
+            margin-top: 14px;
+            box-shadow: 0px 0px 6px #e6e6e6;
+            padding: 10px;
+        }
+
+        .starsList li {
+            color: #3C3C3C;
+            font-size: 14px;
+            margin-top: 14px;
+        }
+        .starsList li:first-child{
+            margin-top: 0;
+        }
+        .starsList .starsRight {
+            color: #d3b56f;
+            display: inline-block;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+
+        .starsRight i {
+            font-size: 22px;
+        }
+        /* 提交按钮 */
+
+        .submit {
+            height: 43px;
+            line-height: 43px;
+            background: #d3b56f;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-top: 40px;
+        }
+        .textNumber {
+            padding: 0 10px;
+            text-align: right;
+        }
+        .tP {
+            text-align: right;
+            font-size: 12px;
+            position: absolute;
+            right: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- 星级选择 -->
+        <ul class="starsList card">
+            <li>
+                <span>卖家服务</span>
+                <div class="starsRight">
+                    <i class="iconfont icon-yduixingxingshixin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                </div>
+            </li>
+            <li>
+                <span>产品描述</span>
+                <div class="starsRight">
+                    <i class="iconfont icon-yduixingxingshixin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                </div>
+            </li>
+            <li>
+                <span>物流服务</span>
+                <div class="starsRight">
+                    <i class="iconfont icon-yduixingxingshixin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                    <i class="iconfont icon-yduixingxingkongxin"></i>
+                </div>
+            </li>
+        </ul>
+        <div class="card sayBlock">
+            <p class="title">购买体会</p>
+            <textarea oninput="fnChangeText(this)" maxlength="100" class="sayTextarea" name="name" rows="8" cols="80" placeholder="写下购买体会与使用感受帮助其他小伙伴吧~"></textarea>
+            <p class="textNumber"><span class="num">0</span>/100</p>
+        </div>
+        <!-- 上传图片 -->
+        <div class="upData card">
+            <p class="title">晒单</p>
+            <div class="fnUpImg" onclick="fnUpDataImg()">
+                <img src="../../image/evalution.png" alt="">
+                <p class="tP">评价晒单，限3张</p>
+            </div>
+            <div class="imgBlock">
+                <img src="" alt="">
+                <img src="" alt="">
+                <img src="" alt="">
+            </div>
+        </div>
+        <!-- 提交 -->
+        <div class="submit" onclick="fnSubmit()">发表评论</div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {};
+    //   星级选择-默认一星
+    var selectArray = [1, 1, 1];
+    $('.starsRight i').click(function() {
+        var selectIndex = $(this).index();
+        var selectLine = $(this).parents('li').index();
+        // 存储星级到相应的位置
+        selectArray[selectLine] = selectIndex + 1;
+        for (var i = 0; i < selectIndex + 1; i++) {
+            $(this).parent('.starsRight').find('i').eq(i).addClass('icon-yduixingxingshixin');
+        }
+        for (var j = selectIndex + 1; j < 5; j++) {
+            $(this).parent('.starsRight').find('i').eq(j).removeClass('icon-yduixingxingshixin');
+        }
+    });
+    //   上传图片 最多两张
+    var index = 0;
+
+    function fnUpDataImg() {
+        api.getPicture({
+            sourceType: 'album',
+            encodingType: 'png',
+            mediaValue: 'pic',
+            destinationType: 'base64',
+            allowEdit: false,
+            quality: 50,
+            saveToPhotoAlbum: false
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.data == '') {
+                    return
+                }
+                index++;
+                var imgDataBase = ret.base64Data;
+                if (index % 3 == 0) {
+                    $('.imgBlock img').eq(2).attr('src', imgDataBase);
+                    $('.imgBlock img').eq(2).css('display', 'inline-block');
+                    dataArr[2] = $('.imgBlock img').eq(0).attr('src');
+                } else if(index % 3 == 1) {
+                    $('.imgBlock img').eq(0).attr('src', imgDataBase);
+                    $('.imgBlock img').eq(0).css('display', 'inline-block');
+                    dataArr[0] = $('.imgBlock img').eq(0).attr('src');
+                } else if(index % 3 == 2) {
+                    $('.imgBlock img').eq(1).attr('src', imgDataBase);
+                    $('.imgBlock img').eq(1).css('display', 'inline-block');
+                    dataArr[1] = $('.imgBlock img').eq(0).attr('src');
+                }
+            }
+        });
+    }
+    // 发表评论
+    var dataArr = [];
+
+    function fnSubmit() {
+        var contents = $('.sayTextarea').val();
+        if (contents == '' || contents.length < 10) {
+            api.toast({
+                msg: '购买体会内容过短',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/evaluate',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    o_id: api.pageParam.o_id, // 订单ID
+                    e_content: contents, // 内容
+                    e_img: dataArr, // base64 数组
+                    e_fw: selectArray[0], // 卖家服务
+                    e_xs: selectArray[1], // 产品描述
+                    e_wl: selectArray[2], // 物流服务
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    api.toast({
+                        msg: '提交成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    // 提交成功后操作
+                    setTimeout(function() {
+                        // 刷新 全部订单、待评价的数据并返回
+                        var jsfun = 'fnReturnInitData();';
+                        api.execScript({
+                            name: 'order_win',
+                            frameName: 'order_frm0',
+                            script: jsfun
+                        });
+                        var jsfun1 = 'fnReturnInitData();';
+                        api.execScript({
+                            name: 'order_win',
+                            frameName: 'order_frm4',
+                            script: jsfun1
+                        });
+                        api.closeWin();
+                    }, 500);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+
+    function fnChangeText(that) {
+        $('.textNumber .num').text($(that).val().length);
+    }
+</script>
+
+</html>

@@ -1,0 +1,69 @@
+<widget id="A6093678626043" version="0.0.1">
+
+    <name>JSNWebApp</name>
+
+    <description>
+
+        君施秾
+
+    </description>
+
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+
+        Developer
+
+    </author>
+
+    <content src="index.html"/>
+
+    <access origin="*"/>
+
+    <preference name="pageBounce" value="false"/>
+
+    <preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+
+    <preference name="hScrollBarEnabled" value="false"/>
+
+    <preference name="vScrollBarEnabled" value="false"/>
+
+    <preference name="autoLaunch" value="true"/>
+
+    <preference name="fullScreen" value="false"/>
+
+    <preference name="autoUpdate" value="true"/>
+
+    <preference name="smartUpdate" value="true"/>
+
+    <preference name="debug" value="true"/>
+
+    <preference name="statusBarAppearance" value="true"/>
+
+    <permission name="readPhoneState"/>
+
+    <permission name="camera"/>
+
+    <permission name="record"/>
+
+    <permission name="location"/>
+
+    <permission name="fileSystem"/>
+
+    <permission name="internet"/>
+
+    <permission name="bootCompleted"/>
+    <preference name="softInputMode" value="resize"/>
+    <permission name="hardware"/>
+    <feature name="wx">
+    <param name="urlScheme" value="wxe103e25e03ee7c31"/>
+    <param name="apiKey" value="wxe103e25e03ee7c31"/>
+    <param name="apiSecret" value="2e60476e259a6a8810c29c336d436ac5"/>
+  </feature>
+    <feature name="bMap">
+        <param name="android_api_key" value="wgUxiGbdREPbnkXafleDGm2xRgkDnNGa"/>
+        <param name="ios_api_key" value="fW2HPMBrpMjpendwZXQ1mxYmwrkn6fi"/>
+    </feature>
+</widget>

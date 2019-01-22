@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>全部订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/iconfont.css">
+    <style>
+        header {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            background-color: #365365;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        header .center {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+        .active {
+            color: #E4084B;
+            border-bottom: 2px solid #E4084B;
+            border-bottom-left-radius:2px;
+            border-bottom-right-radius: 2px;
+        }
+        #nav {
+            padding: 0 15px;
+            border-bottom: 2px solid #F3F3F3;
+
+        }
+        #nav ul {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+        }
+        #nav li {
+            width: 20%;
+            font-size: 14px;
+            text-align: center;
+            padding: 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="left" onclick="api.closeWin()">
+            <i class="iconfont icon-fanhui"></i>
+        </div>
+        <div class="center">全部订单</div>
+    </header>
+    <nav id="nav">
+        <ul class="flex-wrap">
+            <li tapmode onclick="randomSwitchBtn( this );" class="flex-con active">
+                <p>全部</p>
+            </li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                <p>待付款</p>
+            </li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                <p>待发货</p>
+            </li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                <p>待收货</p>
+            </li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                <p>待评价</p>
+            </li>
+        </ul>
+    </nav>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // 加载frameGroup
+        fnOpenFrameGroup()
+    };
+    // 打开frameGroup
+    function fnOpenFrameGroup() {
+        var frames = [];
+        for (var i = 0, len = 5; i < len; i++) {
+            frames.push({
+                name: 'order_frm' + i,
+                url: './order_frm' + i + '.html',
+                bgColor: 'rgba(0,0,0,.2)',
+                bounces: true,
+                pageParam: {
+                    orderType: i
+                }
+            })
+        }
+        var header = $api.byId('header');
+        var headerH = $api.offset(header).h;
+        var nav = $api.byId('nav');
+        var navH = $api.offset(nav).h;
+        api.openFrameGroup({
+            name: 'orderGroup',
+            reload:true,
+            frames: 'frames',
+            rect: {
+                x: 0,
+                y: headerH + navH,
+                w: 'auto',
+                h: 'auto'
+            },
+            index: api.pageParam.index,
+            frames: frames,
+            preload: 5
+        }, function(ret, err) {
+            var index = ret.index;
+            // 更新选中状态
+            fnSetNavMenuSelected(index);
+        });
+    }
+    // 滑动回调函数，底部选中状态
+    function fnSetNavMenuSelected(index_) {
+        var menus = $api.domAll('#nav li');
+        for (var i = 0; i < menus.length; i++) {
+            if (index_ == i) {
+                $api.addCls(menus[i], 'active');
+            } else {
+                $api.removeCls(menus[i], 'active');
+            }
+        }
+    }
+    // 点击切换按钮，设定相应frame
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#nav li.active')) return;
+        var eFootLis = $api.domAll('#nav li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                    index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+            }
+        }
+        $api.addCls(eFootLis[index], 'active');
+        api.setFrameGroupIndex({
+            name: 'orderGroup',
+            index: index
+        });
+    };
+</script>
+
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>搜索</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+    header {
+        position: relative;
+        width: 100%;
+        height: 42px;
+        background-color: #365365;
+    }
+
+    header .left {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100px;
+        height: 42px;
+        color:#fff;
+    }
+
+    header .left .city {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 42px;
+        padding-left: 27px;
+        box-sizing: border-box;
+        line-height: 50px;
+        font-size: 14px;
+        color: #fff;
+        text-align: left;
+    }
+
+    header .center {
+        position: relative;
+        width: 100%;
+        height: 42px;
+        line-height: 42px;
+        text-align: center;
+        font-size: 16px;
+        color: #FFFFFF;
+    }
+    header .search {
+        transition: all 2s linear;
+        padding-top: 6px;
+    }
+    header .search .left {
+        width: 40px;
+        height: 42px;
+        line-height: 42px;
+        text-align: center;
+    }
+    header .search .center {
+        height: 19px;
+        line-height: 19px;
+        padding: 5px 0;
+        width: 238px;
+        background: #fff;
+        border-radius: 5px;
+        color: #949494;
+        margin: 0 auto;
+    }
+    header .search .center i{
+        font-size:17px;
+        vertical-align: middle;
+    }
+    header .search .center input {
+        margin-left: 10px;
+        outline: none;
+        width: 190px;
+        font-size: 13px;
+    }
+    header .right {
+        color: #fff;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 42px;
+        line-height: 42px;
+    }
+
+    header .right i {
+        color: #FFF;
+        font-size: 16px;
+    }
+
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <!-- 搜索title -->
+        <div class="search">
+            <div class="left" onclick="api.closeWin();">
+                <i class="iconfont icon-fanhui"></i>
+            </div>
+            <div class="center">
+                <i class="iconfont icon-i_search_nav_selecte"></i>
+                <input class="searchText" type="text" placeholder="商品关键词·商品名称">
+            </div>
+            <div class="right" onclick="searchBtnFn()">搜索</div>
+        </div>
+    </header>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 防止header与状态栏重叠
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        openFrame();
+        // 设置搜索的值
+        var searchVal = $api.dom('.search .searchText');
+        $api.val(searchVal,api.pageParam.name);
+    };
+    function openFrame() {
+        var header = $api.byId('header');
+        var headerH = $api.offset(header).h;
+        api.openFrame({
+            name: 'searchGoods_frm',
+            url: './searchGoods_frm.html',
+            bgColor: 'rgba(0, 0, 0, 0.8)',
+            rect: {
+                x: 0,
+                y: headerH,
+                w: 'auto', // 自动填充所在Window的宽度
+                h: 'auto' // 自动填充所在Window的高度
+            },
+            bounces: true, // 打开弹动
+            pageParam: {
+                name: api.pageParam.name
+            }
+        });
+    }
+    //  点击搜索 传递搜索值到frm
+    function searchBtnFn() {
+        var value = $api.val($api.dom('.center input'));
+        var param = { data: value};
+        api.execScript({
+            name: 'searchGoods_win',
+            frameName: 'searchGoods_frm',
+            script: 'funcGoto('+JSON.stringify( param )+')'
+        });
+    }
+</script>
+
+</html>

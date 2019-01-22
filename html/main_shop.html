@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+        #footer {
+            background-color: #FFFFFF;
+        }
+
+        #footer ul li {
+            color: #727071;
+            font-size: 12px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+            height: 46px;
+        }
+
+        #footer ul li.active {
+            color: #d3b56f;
+        }
+
+        #footer ul li i {
+            font-size: 20px;
+        }
+
+        .flex-con {
+            overflow: auto
+        }
+        .wrapBg {
+            background: #333333;
+            margin-bottom: -5px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap" class="flex-wrap flex-vertical">
+        <div id="main" class="flex-con"></div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap wrapBg">
+                <li tapmode onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i class="iconfont icon-diamondzuanshi"></i>
+                    <p>首页</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con ">
+                    <i style="font-size:22px" class="iconfont icon-membership-card_icon"></i>
+                    <p>会员卡</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i class="iconfont icon-gouwuche1"></i>
+                    <p>购物车</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i class="iconfont icon-wode1"></i>
+                    <p>我的</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+        var localStorage = $api.getStorage('userToken');
+        if (!localStorage || localStorage == '') {
+            api.openWin({
+                name: 'login_frm',
+                url: 'html/login_frm.html',
+            });
+            return;
+        } else {
+            funIniGroup();
+        }
+        // 双击退出
+        var exitFlag = false;
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            if (!exitFlag) {
+                api.toast({
+                    msg: '再按一次退出',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                exitFlag = true;
+            } else {
+                api.closeWidget({
+                    silent: true
+                });
+            }
+            setTimeout(function() {
+                exitFlag = false;
+            }, 2000);
+        });
+        // 从首页进入，除第一次外，初始化打开商城页面
+        api.addEventListener({
+            name: 'setIndex0'
+        }, function(ret, err){
+            if( ret ){
+                if(ret.value.ifSet == true){
+                    api.setFrameGroupIndex({
+                        name: 'groupShop',
+                        index: 0
+                    });
+                }
+            }
+        });
+    }
+    function funIniGroup() {
+        var eHeaderLis = $api.domAll('header li'),
+            frames = [];
+        frames = [{
+            name: 'frame_shop',
+            url:'./frame_shop.html'
+        },{
+            name: 'frame1',
+            url:'./frame1.html'
+        },{
+            name: 'frame3',
+            url:'./frame3.html'
+        },{
+            name: 'frame4',
+            url:'./frame4.html'
+        },]
+        api.openFrameGroup({
+            name: 'groupShop',
+            scrollEnabled: false, // 手势滑动切换
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: $api.dom('#main').offsetHeight
+            },
+            index: 0,
+            frames: frames,
+            preload: 1, // 预加载所有Frame
+        }, function(ret, err) {
+            // Frame切换完成的响应函数，更新分类菜单的选中状态
+            // fnSetNavMenuSelected(ret.index);
+            
+            if(ret.index == 0){
+                // api.openWin({
+                //     name: 'main_win',
+                //     url: './main_win.html',
+                //     pageParam: {
+                //         name: 'test'
+                //     }
+                // });
+            }
+        });
+    }
+    // 切换底部选中状态
+    function fnSetNavMenuSelected(index_) {
+        var menus = $api.domAll('#footer li');
+        for (var i = 0; i < menus.length; i++) {
+            if (index_ == i) {
+                $api.addCls(menus[i], 'active');
+            } else {
+                $api.removeCls(menus[i], 'active');
+            }
+        }
+    }
+    // 随意切换按钮
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active')) return;
+        var eFootLis = $api.domAll('#footer li'),
+            eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+            }
+        }
+        if($(tag).index() != 0){
+            $api.addCls(eFootLis[index], 'active');
+        }; // 如果是跳转到首页，不添加active
+
+        // 点击事件
+        if (index == 0) {
+            api.openWin({
+                name: 'main_win',
+                url: './main_win.html',
+                pageParam: {
+                    name: 'test'
+                }
+            });
+        } else {
+            api.setFrameGroupIndex({
+                name: 'groupShop',
+                index: index
+            });
+        }
+    }
+    // 是否登陆
+    function fnIfLogin(para) {
+        // 从缓存中获取用户信息
+        var userInfo = $api.getStorage('userInfo');
+        // 判断当前用户是否登录了
+        if (userInfo && userInfo.token) {
+            api.setFrameGroupIndex({
+                name: 'groupShop',
+                index: para
+            });
+        } else {
+            api.setFrameGroupIndex({
+                name: 'groupShop',
+                index: para
+            });
+            // 没有登录，打开登录Window
+            api.openWin({
+                name: 'login_win',
+                url: 'html/login_win.html',
+            });
+        }
+    }
+</script>

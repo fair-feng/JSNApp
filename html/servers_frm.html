@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>客服</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <!-- <link rel="stylesheet" href="../css/public.css"> -->
+</head>
+<style type="text/css">
+    body {
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    body,
+    html {
+        background: #F3F3F3;
+    }
+
+    .wrapper {
+        /*border: 1px solid blue;*/
+    }
+    /* 聊天区域 */
+
+    .content {
+        /*border: 1px solid red;*/
+        padding: 0 15px;
+    }
+
+    .content .left {
+        justify-content: flex-start;
+    }
+
+    .content .right {
+        justify-content: flex-end;
+    }
+
+    .content .left,
+    .content .right {
+        margin-bottom: 15px;
+    }
+    /* 左侧 */
+
+    .content .left,
+    .content .right {
+        display: -webkit-flex;
+        display: flex;
+    }
+
+    .content .userImg {
+        border-radius: 50%;
+        width: 48px;
+        min-width: 48px;
+        height: 48px;
+    }
+
+    .left .userImg {
+        margin-right: 15px;
+    }
+
+    .right .userImg {
+        margin-left: 15px;
+    }
+
+    .content .con {
+        max-width: 80%;
+        min-height: 32px;
+        background: #fff;
+        color: #E41849;
+        font-size: 14px;
+        border-radius: 5px;
+        padding: 8px 10px;
+        box-shadow: 5px 5px 5px #8C8C8C;
+    }
+
+    .footer_input {
+        position: fixed;
+        bottom: 0;
+        /*height: 40px;*/
+        background: #365365;
+        border-top: 1px solid #F1F1F1;
+        width: 100%;
+        display: -webkit-flex;
+        display: flex;
+        justify-content: space-around;
+        padding: 8px 0px;
+    }
+
+    .footer_input .valInput {
+        background: #fff;
+        border-radius: 5px;
+        font-size: 12px;
+        color: #898989;
+        height: 32px;
+        width: 182px;
+        outline: none;
+        padding-left: 5px;
+    }
+
+    .footer_input i {
+        height: 32px;
+        line-height: 32px;
+        color: #fff;
+        font-size: 18px;
+    }
+
+    .footer_input .send {
+        height: 32px;
+        line-height: 32px;
+        background: #45718D;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+        padding: 0 7px;
+    }
+
+    .upImg {
+        width: 100px;
+        height: auto;
+    }
+    .content .con {
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    .con img {
+        width: 100px;
+        height: auto;
+    }
+
+    #mask {
+        display: none;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, .6);
+        text-align: center;
+        line-height: 100vh;
+    }
+
+    #mask .maskImg {
+        max-width: 80%;
+        border-radius: 3px;
+    }
+</style>
+
+<body onload="window.scrollTo(0,document.body.scrollHeight)">
+    <div class="wrapper">
+        <div class="content">
+            <!-- 右 -->
+            <!-- <div class="right">
+                <div class="con"></div>
+                <img class="userImg" src="../image/swiper-01.png" alt="">
+            </div> -->
+            <!-- 左 -->
+            <!-- <div class="left">
+                <img class="userImg" src="../image/swiper-01.png" alt="">
+                <div class="con"></div>
+            </div> -->
+        </div>
+        <div class="footer_input">
+            <!-- <i class="iconfont icon-biaoqing"></i> -->
+            <i class="iconfont icon-tupian" onclick="fnSetImg()"></i>
+            <!-- <i class="iconfont icon-p-praise"></i> -->
+            <input class="valInput" type="text" placeholder="请输入您要咨询的内容">
+            <div class="send" onclick="fnSend()">发送</div>
+        </div>
+    </div>
+    <div id="mask">
+        <img class="maskImg" src="" alt="">
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script src="../script/zepto.1.2.0.js"></script>
+<script>
+    apiready = function() {
+        // 初始化数据，获取聊天记录
+        fuChatRecord();
+    }
+
+    var ws;
+
+    function connect() {
+        // 创建websocket
+        ws = new WebSocket("ws://47.104.214.86:2000");
+        ws.onmessage = onmessage;
+        ws.onclose = function() {
+            setTimeout(function functionName() {
+                connect();
+            },3000)
+        };
+        ws.onerror = function() {
+        };
+    }
+
+    function onmessage(e) {
+        var data = eval("(" + e.data + ")");
+        var type = data.type || '';
+        if (type == 'init') {
+            api.ajax({
+                url: $api.reqUrl + 'Home/Chat/bind',
+                method: 'post',
+                data: {
+                    values: {
+                        token: $api.getStorage('userToken'),
+                        client_id: data.client_id,
+                    },
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    // 获取聊天记录
+                }
+            });
+
+        }
+        if (type == 'say') {
+            // 判断房间
+            if(api.pageParam.group_id != data.group_id) {
+                return false;
+            }
+            if (data.s_user_id == globalUid) {
+                var string = '<div class="left">\
+                    <img class="userImg" src="' + $api.reqUrl + data.userinfo.user_img + '" alt="">\
+                    <div class="con">' + data.message +'</div></div>';
+            } else { // 接受自己发送，反推的数据
+                var string = '<div class="right">\
+                    <div class="con">' + data.message + '</div>\
+                    <img class="userImg" src="'+ $api.reqUrl + data.userinfo.user_img +'" alt="">\
+                </div>';
+            }
+            $('body').scrollTop($('.content').height());
+            $('.content').append(string);
+        }
+    }
+
+
+    //发送
+    function fnSend(para) {
+        var content;
+        if (para) {
+            content = para;
+        } else {
+            content = $('.valInput').val();
+        }
+        // 判断是否发送内容为空
+        if (content == '') {
+            api.toast({
+                msg: '请输入内容',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        // 发送消息
+        api.ajax({
+            url: $api.reqUrl + 'Home/Chat/send',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    sid: sId,
+                    group_id: api.pageParam.group_id,
+                    con: content
+                },
+            }
+        }, function(ret, err) {
+            // console.log(JSON.stringify(ret));
+            // console.log(JSON.stringify(err));
+            if (ret.code ==1) {
+                $('.valInput').val('');
+            }
+        });
+    }
+
+    // 点击选择图片
+    function fnSetImg() {
+        api.getPicture({
+            sourceType: 'album', // 来源
+            encodingType: 'jpg', // 类型
+            mediaValue: 'pic', // 视频还是图片
+            destinationType: 'base64', // 返回路径还是base64
+            allowEdit: true, // 图片编辑
+            quality: 50, // 图片质量
+            // targetWidth: 100,
+            // targetHeight: 100,
+            saveToPhotoAlbum: false
+        }, function(ret, err) {
+            if (ret) {
+                var imgDataBase = ret.base64Data;
+                fnUpImg(imgDataBase);
+            }
+        });
+    }
+    // 上传图片到后台
+    function fnUpImg(imgDataBase) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Upload/baseUoload',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    img: imgDataBase,
+                    path: 'chat',
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    api.toast({
+                        msg: '上传中...',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    addImgBlock(ret.data);
+                }
+            }
+        });
+    }
+    // 前台添加图片
+    function addImgBlock(imgUrl) {
+        var string = "<img src=" + $api.reqUrl + imgUrl + ">";
+        $('body').scrollTop($('.content').height());
+        fnSend(string);
+        bigImg();
+    }
+    var globalUid;
+
+    // 聊天记录 设置sid
+    var sId = '';
+    function fuChatRecord() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Chat/msg_list',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    group_id: api.pageParam.group_id
+                },
+            }
+        },function(ret, err){
+            if (ret.code ==1) {
+                sId = ret.data.room.admin_id;
+                globalUid = ret.data.room.user_id;
+                connect();
+                // 遍历聊天记录
+                var chat = ret.data.chat;
+                for (var i = 0; i < chat.length; i++) {
+                    if(chat[i].user_id == globalUid){
+                        var string = '<div class="right">\
+                            <div class="con">' + chat[i].chat_content + '</div>\
+                            <img class="userImg" src="'+ $api.reqUrl + ret.data.room.user_img +'" alt="">\
+                        </div>';
+                    } else {
+                        var string = '<div class="left">\
+                            <img class="userImg" src="' + $api.reqUrl + ret.data.room.simg + '" alt="">\
+                            <div class="con">' + chat[i].chat_content +'</div></div>';
+                    }
+                    $('body').scrollTop($('.content').height());
+                    $('.content').append(string);
+                }
+            }
+        });
+    }
+
+    // 点击图片放大功能
+    function bigImg() {
+        $('.con img').click(function() {
+            var flag = true;
+            if (flag) {
+                flag = false; //把状态设为放大状态
+                $('#mask').css('display', 'block')
+                var imgUrl = $(this).attr('src');
+                $('.maskImg').attr('src', imgUrl);
+            }
+            //  else{
+            //      flag = true;
+            //       $('#mask').css('display','none')
+            //  }
+        })
+    }
+
+    $('#mask').click(function() {
+        $(this).css('display', 'none');
+    });
+    $('#mask .maskImg').click(function() {
+        $('#mask').css('display', 'none');
+    });
+</script>
+
+</html>

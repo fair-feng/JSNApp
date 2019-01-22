@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+        #header {
+            position: fixed;;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 42px;
+            background-color: #365365;
+            z-index: 999;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        header .center {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+
+        header .right {
+            color: #fff;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            padding-left: 20px;
+        }
+
+        header .right i {
+            color: #FFF;
+            font-size: 16px;
+        }
+        /* 购买数量 */
+
+        .buyNumber {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .buyNumber .val {
+            font-size: 14px;
+            color: #EB2D62;
+            line-height: 19px;
+        }
+
+        .buyNumber .numberBlock span {
+            display: inline-block;
+            width: 25px;
+            height: 19px;
+            line-height: 19px;
+            text-align: center;
+            color: #EB2D62;
+            font-size: 16px;
+        }
+
+        .numberBlock .num {
+            /*font-size: 18px;*/
+        }
+
+        .numberBlock .reduce,
+        .numberBlock .add {
+            background: #E8E8E8;
+            /*color: #EB2D62;*/
+        }
+        /* list */
+
+        #goodsList li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            border-bottom: 1px solid #E8E8E8;
+            background: #fff;
+        }
+
+        #goodsList .select {
+            height: 95px;
+            line-height: 95px;
+        }
+
+        #goodsList .logo {
+            width: 95px;
+            height: 95px;
+            margin-right: 5px;
+        }
+
+        #goodsList .right .text {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 100%;
+            width: 205px;
+        }
+
+        .right .title {
+            color: #1C1C1C;
+            font-size: 18px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .right .con {
+            color: #696969;
+            font-size: 12px;
+            line-height: 18px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        /* radio */
+
+        input[type="checkbox"]+label::before {
+            content: "\a0";
+            /*不换行空格*/
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 18px;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+            border: 1px solid #E4007F;
+            text-indent: 3px;
+            line-height: 1;
+            margin-top: -5px;
+        }
+
+        input[type="checkbox"]:checked+label::before {
+            background-color: #E4007F;
+            background-clip: content-box;
+            padding: 3px;
+            width: 10px;
+            height: 10px;
+        }
+
+        input[type="checkbox"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+        /* 结算 */
+
+        #footer {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #footer .left {
+            margin-left: 15px;
+            line-height: 38px;
+        }
+
+        #footer .left span {
+            color: #232424;
+            font-size: 16px;
+        }
+
+        #footer .right .sum {
+            display: inline-block;
+            font-size: 12px;
+            color: #232424;
+        }
+
+        #footer .right .balance,
+        #footer .deleteList  {
+            display: inline-block;
+            background: #EB2D62;
+            font-size: 17px;
+            color: #fff;
+            width: 106px;
+            height: 38px;
+            line-height: 38px;
+            text-align: center;
+            margin-left: 15px;
+        }
+        #footer .deleteList {
+            display: none;
+        }
+        #goodsList {
+            margin-bottom: 38px;
+        }
+        /* 没有数据 */
+
+        .noCard {
+            margin-top: 35vh;
+        }
+
+        .noCard .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noCard .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="center">购物车</div>
+        <div class="right" onclick="fnManagement()">管理</div>
+    </header>
+    <!-- 列表 -->
+    <ul id="goodsList">
+    </ul>
+    <!-- 暂无数据 -->
+    <div class="noCard">
+        <div class="block">
+            <img src="../image/notComments@2x.png" alt="">
+            <span>暂无数据</span>
+        </div>
+    </div>
+    <!-- 结算 -->
+    <div id="footer">
+        <div class="left">
+            <input id="selectAll" type="checkbox" onclick="fnselectAll(this)">
+            <label for="selectAll"></label>
+            <span>全选</span>
+        </div>
+        <div class="right">
+            <p class="sum">合计：￥<span>0</span></p>
+            <div class="balance" onclick="fnBalance()">结算</div>
+        </div>
+        <div class="deleteList" onclick="fnDeleteGoods()">删除</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // 初始化数据请求
+        fnInitData();
+        var headerH = $api.offset(header);
+
+        var goodsList = $api.byId('goodsList');
+        $api.css(goodsList,'margin-top:' + headerH.h +'px');
+        api.addEventListener({
+            name: 'reloadGoodsCarData'
+        }, function(ret, err){
+            if( ret ){
+                 fnInitData();
+            }
+        });
+
+    };
+
+    // 数量加减函数
+    function fnReduce(that) {
+        var numberVal = $(that).siblings('.num').html();
+        if (numberVal <= 1) {
+            return;
+        }
+        numberVal--;
+        $(that).siblings('.num').html(numberVal);
+        // 设置价格
+        fnCalculateVal();
+        // 加减接口
+        var scId = $(that).parents('li').children('input').attr('id');
+        fnGoodsNumber(scId,2);
+    }
+
+    function fnAdd(that) {
+        var numberVal = $(that).siblings('.num').html();
+        numberVal++;
+        $(that).siblings('.num').html(numberVal);
+        // 设置价格
+        fnCalculateVal();
+        // 加减接口
+        var scId = $(that).parents('li').children('input').attr('id');
+        fnGoodsNumber(scId,1);
+    }
+
+    function fnInitData() {
+        $('#goodsList').html('');
+        api.ajax({
+            url: $api.reqUrl + 'Home/ShopCart/shopCart',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken')
+                },
+            }
+        },function(ret, err){
+            if (ret.code ==1) {
+                var data = ret.data
+                for (var i = 0; i < data.length; i++) {
+                    // var string = `<li>
+                    //     <input id="${sc_id}" type="checkbox" onclick="fnSelece(this)">
+                    //     <label class="select" for="${i}" ></label>
+                    //     <img class="logo" src="${ $api.reqUrl + data[i].goods_img}" alt="">
+                    //     <div class="right">
+                    //         <div class="text">
+                    //             <span class="title">${data[i].goods_name}</span>
+                    //             <p class="con">${data[i].goods_describe}</p>
+                    //             <div class="number">
+                    //                 <div class="buyNumber">
+                    //                     <p class="val">￥：<span>${data[i].price}</span></p>
+                    //                     <section class="numberBlock">
+                    //                         <span class="reduce" onclick="fnReduce(this)">－</span>
+                    //                         <span class="num">${data[i].sc_num}</span>
+                    //                         <span class="add" onclick="fnAdd(this)">+</span>
+                    //                     </section>
+                    //                 </div>
+                    //             </div>
+                    //         </div>
+                    //     </div>
+                    // </li>`;
+                    var string =  "<li><input id=\"" + data[i].sc_id + "\" type=\"checkbox\" onclick=\"fnSelece(this)\"><label class=\"select\" for=\"" + data[i].sc_id +
+                    "\" ></label><img onclick=\"fnLinkGoods("+ data[i].goods_id +")\" class=\"logo\" src=\"" + ($api.reqUrl + data[i].goods_img) +
+                     "\" alt=\"\"><div class=\"right\"><div class=\"text\"><span class=\"title\">" +
+                     data[i].goods_name + "</span><p class=\"con\">" + data[i].goods_describe + "</p><div class=\"number\"><div class=\"buyNumber\"><p class=\"val\">￥：<span>" + data[i].price +
+                     "</span></p><section class=\"numberBlock\"><span class=\"reduce\" onclick=\"fnReduce(this)\">－</span><span class=\"num\">" + data[i].sc_num +
+                     "</span><span class=\"add\" onclick=\"fnAdd(this)\">+</span></section></div></div></div></div></li>";
+                    $('#goodsList').append(string);
+                }
+                $('.noCard').css('display','none');
+            } else {
+                $('.noCard').css('display','block');
+            }
+        });
+
+    }
+    // 全选
+    function fnselectAll(that) {
+        if ($(that).is(':checked')) {
+            $("#goodsList input[type='checkbox']").prop("checked", true);
+        } else {
+            $("#goodsList input[type='checkbox']").prop("checked", false);
+        }
+        // 设置价格
+        fnCalculateVal();
+    }
+    // 单选
+    function fnSelece(that) {
+        if ($("#goodsList input[type='checkbox']").length === $("#goodsList input:checked").length) {
+            $("#selectAll").prop("checked", true);
+        } else {
+            $("#selectAll").prop("checked", false);
+        }
+        // 设置价格
+        fnCalculateVal();
+    }
+    // 价格计算函数
+    function fnCalculateVal() {
+        var totalVal = 0;
+        for (var i = 0; i < $('#goodsList li').length; i++) {
+            var ifTrue = $('#goodsList li').eq(i).children('input:checked').is(':checked');
+            if(ifTrue){
+                totalVal += $('#goodsList li').eq(i).find('.num').html() * $('#goodsList li').eq(i).find('.val span').html();
+            }
+        }
+        $('#footer .sum span').html(totalVal);
+    }
+    // 管理
+    function fnManagement() {
+        if($('#footer .right').css('display') == 'none'){
+            $('#footer .right').css('display','block');
+            $('#footer .deleteList').css('display','none');
+            $('#header .right').html('管理');
+        } else {
+            $('#footer .right').css('display','none');
+            $('#footer .deleteList').css('display','block');
+            $('#header .right').html('取消');
+        }
+    }
+    // 删除
+    function fnDeleteGoods() {
+        var deleteString = '';
+        for (var i = $('#goodsList li').length-1; i>-1 ; i--) {
+            var ifTrue = $('#goodsList li').eq(i).children('input:checked').is(':checked');
+            var sc_id = $('#goodsList li').eq(i).children('input').attr('id');
+            if(ifTrue){
+                $('#goodsList li').eq(i).remove();
+                if(deleteString == ''){
+                    deleteString += sc_id;
+                } else {
+                    deleteString += ',' + sc_id;
+                }
+            }
+        }
+        fnDeletaAjax(deleteString);
+    }
+    // 删除接口
+    function fnDeletaAjax(deleteString) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/ShopCart/del_sc',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: deleteString
+                },
+            }
+        },function(ret, err){
+            if (ret.code ==1) {
+                api.toast({
+                    msg: '删除成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                $("#selectAll").prop("checked", false);
+                if($('#goodsList').html().length<10){
+                    $('.noCard').css('display','block');
+                }
+            }
+        });
+    }
+    /**
+    *数量加减
+    * pScId: sc_id,购物车ID
+    * pType: 1、增加、2减少
+    */
+    function fnGoodsNumber(pScId,pType) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/ShopCart/num_sc',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: pScId,
+                    type: pType
+                },
+            }
+        },function(ret, err){
+        });
+    }
+    // 结算
+    function fnBalance() {
+        // 判断是否选中商品
+        var ifGoodsSele = false;
+        // scid
+        var sc_idString = '';
+        // 商品数量
+        for (var i = 0; i < $('#goodsList li').length; i++) {
+            var goods = $('#goodsList li').eq(i).children('input:checked').is(':checked');
+            if(goods){
+                var stringSc = $('#goodsList li').eq(i).children('input').attr('id');
+                ifGoodsSele = true;
+                if(sc_idString == ''){
+                    sc_idString += stringSc;
+                } else {
+                    sc_idString += ',' + stringSc;
+                }
+            }
+        }
+        if(ifGoodsSele == false) {
+            api.toast({
+                msg: '请选择商品',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        api.openWin({
+            name: 'submitOrder_win',
+            url: './submitOrder_win.html',
+            pageParam: {
+                joinType: 1, // 1购物车 2立即购买 order/index
+                sc_id: sc_idString,
+            }
+        });
+    }
+    // 跳转详情
+    function fnLinkGoods(para) {
+        if (para == '' || para == undefined) {
+            return;
+        }
+        api.openWin({
+            name: 'goodsDetails_win',
+            url: './goodsDetails_win.html',
+            pageParam: {
+                goods_id: para
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>订单详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+    body,html {
+        background: #F3F3F3;
+    }
+    /* 等待付款 */
+    .topText {
+        padding-top: 15px;
+        padding-bottom: 15px;
+
+    }
+    .topText i {
+        color: #E4084B;
+        font-size: 24px;
+        margin-right: 42px;
+        vertical-align: middle;
+    }
+    .topText span {
+        color: #4C4D4D;
+        font-size: 16px;
+        vertical-align: sub;
+    }
+    /* 地址 */
+    .address {
+        display: -webkit-flex;
+        display: flex;
+        padding: 6px 0 10px;
+        font-size: 14px;
+    }
+    .address > i {
+        margin-right: 26px;
+        color: #E4084B;
+        font-size: 24px;
+        margin-top: 20px;
+    }
+    .address .userInformation {
+        display: -webkit-flex;
+        display: flex;
+        justify-content: space-between;
+    }
+    .address .addre {
+        margin-top: 18px;
+        line-height: 24px;
+    }
+    /* 商品详情 */
+    .goodsInformation {
+        display: -webkit-flex;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        color: #414141;
+        font-size: 14px;
+    }
+    .goodsInformation img {
+        width: 100px;
+        min-width: 100px;
+        height: 100px;
+        border-radius: 3px;
+    }
+    .goodsInformation .right {
+        margin-left: 15px;
+    }
+    .goodsInformation .right .title {
+         line-height: 22px;
+     }
+    .goodsInformation .valBlock {
+        display: -webkit-flex;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+        font-size: 18px;
+    }
+    .goodsInformation .valBlock .val {
+        color: #E4084B;
+    }
+    /* 按钮 */
+    .btns {
+        padding: 5px 0;
+    }
+    /* 信息列表 */
+    .list .flex {
+        display: -webkit-flex;
+        display: flex;
+        justify-content: space-between;
+    }
+    .list li {
+        padding: 7px 15px;
+        border-bottom: 1px solid #F3F3F3;
+        font-size: 14px;
+        color: #2A2A2A;
+    }
+    .list .serverIcon {
+        font-size: 24px;
+        vertical-align: middle;
+        margin-right: 6px;
+    }
+     .list .informationList{
+         padding-bottom: 20px;
+         margin-bottom: 40px;
+     }
+    .list .informationList p {
+        margin-bottom: 7px;
+    }
+    #wrapper {
+        background: #fff;
+    }
+    #wrapper .btns,
+    #footer {
+        text-align: right;
+    }
+    #wrapper .btns span,
+    #footer span {
+        padding: 5px 15px;
+        border: 1px solid #38596C;
+        border-radius: 27px;
+        font-size: 14px;
+        color: #454545;
+        text-align: center;
+        min-width: 40px;
+        margin-left: 10px;
+    }
+    #wrapper > div {
+        padding-left: 15px;
+        padding-right: 15px;
+        border-bottom: 2px solid #F3F3F3;
+    }
+    #footer {
+        position: fixed;
+        bottom: 0;
+        width: 92%;
+        background: #fff;
+        padding: 6px 4%;
+    }
+    #footer .payMoney {
+        color: #E4084B;
+        border: 1px solid #E4084B;
+    }
+    .font-12 {
+        font-size: 12px;
+    }
+    .red {
+        color: #E4084B;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="topText">
+            <i class="iconfont"></i>
+            <span></span>
+        </div>
+        <div class="address">
+            <i class="iconfont icon-weizhi"></i>
+            <div class="text">
+                <div class="userInformation">
+                    <p>收货人:<span class="userName"></span></p>
+                    <span class="phone"></span>
+                </div>
+                <p class="addre line-2"></p>
+            </div>
+        </div>
+        <div class="goodsInformation" onclick="fnOpenGoodDetails()">
+            <img src="" alt="">
+            <div class="right">
+                <p class="title line-2"></p>
+                <div class="valBlock">
+                    <p class="val">￥:<span></span></p>
+                    <p class="num">X<span></span></p>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="btns">
+            <span class="btn1">取消订单</span>
+            <span class="btn2">付款</span>
+        </div> -->
+        <ul class="list">
+            <li class="flex">
+                <span>配送方式</span>
+                <p class="font-12">运费：<span class="freight"></span></p>
+            </li>
+            <li class="flex">
+                <span>实付款（含运费）</span>
+                <p class="red">￥:<span class="totalVal"></span></p>
+            </li>
+            <li>买家留言：<span class="leaveMsg"></span></li>
+            <li>
+                <i class="iconfont icon-kefu serverIcon red"></i>
+                <span>订单信息</span>
+            </li>
+            <li class="font-12 informationList">
+                <p class="num1">订单编号：<span></span></p>
+                <p class="num2">订单交易号：<span></span></p>
+                <p class="num3">交易时间：<span></span></p>
+                <p class="num4">支付时间：<span></span></p>
+            </li>
+        </ul>
+    </div>
+    <footer id="footer">
+        <!-- <span>取消订单</span> -->
+        <!-- <span class="payMoney">付款</span> -->
+    </footer>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+    };
+    // 初始化数据请求
+    var goodsId = '';
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_order_xq',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: api.pageParam.o_id,
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code == 1){
+                    var data = ret.data;
+                    goodsId = data.g_id;
+                    // 地址信息
+                    $('.userInformation .userName').text(data.s_name);
+                    $('.userInformation .phone').text(data.s_phone);
+                    $('.address .addre').text('收货地址:' + data.s_city_xq);
+                    // 商品信息
+                    $('.goodsInformation > img').attr('src', $api.reqUrl + data.g_img);
+                    $('.goodsInformation .title').text(data.g_name);
+                    $('.valBlock .val span').text(data.g_price);
+                    $('.valBlock .num span').text(data.o_num);
+                    // 配送方式
+                    $('.list .freight').text(data.e_freight);
+                    $('.totalVal').text(data.o_money);
+                    // 留言
+                    $('.leaveMsg').text(data.o_bz);
+                    // 编号信息 (区分是否已经支付，支付则存在交易号、支付时间)
+                    $('.informationList .num1 span').text(data.o_orderid);
+                    $('.informationList .num2 span').text(data.pay_orderid);
+                    $('.informationList .num3 span').text(data.o_date);
+                    $('.informationList .num4 span').text(data.pay_time);
+
+                    // 底部逻辑
+                    var goodsType = data.o_status;
+                    var goodsTypeString = '';
+                    if(goodsType == 0){// 待付款
+                        goodsTypeString = "<span class=\"btn1\" onclick=\"fnDalog(this," + data.o_id + ")\">取消订单</span><span class=\"payMoney\" onclick=\"fnpayMoney("+ data.o_money +','+ data.o_id + ")\">付款</span>";
+                        $('.topText i').addClass('icon-fukuan');
+                        $('.topText span').text('等待买家付款');
+                        // 隐藏 交易号、支付时间
+                        $('.informationList .num2').css('display','none');
+                        $('.informationList .num4').css('display','none');
+                    } else if(goodsType == 1) {// 待发货
+                        goodsTypeString = "";
+                        $('.topText i').addClass('icon-daifahuo2');
+                        $('.topText span').text('已付款，等待卖家发货');
+                    } else if(goodsType == 4) {// 待收货
+                        goodsTypeString = "<span class=\"btn1\" onclick=\"fnSeeGoods(" + data.o_id + ")\">查看物流</span><span class=\"payMoney\" onclick=\"fnConfirmGoods(" + data.o_id + ")\">确认收货</span>";
+                        $('.topText i').addClass('icon-daifahuo1');
+                        $('.topText span').text('正在配送中...');
+                    } else if(goodsType == 5) {// 待评价
+                        goodsTypeString = "<span class=\"btn1\" onclick=\"fnSeeGoods(" + data.o_id + ")\">查看物流</span><span class=\"payMoney\" onclick=\"fnEvaluation(" + data.o_id + ")\">去评价</span>";
+                        $('.topText i').addClass('icon-songhuo');
+                        $('.topText span').text('已收货，待评价');
+                    } else if(goodsType == 6) {// 已完成
+                        goodsTypeString = "<span class=\"btn1\" onclick=\"fnDalog(this,"+ data.o_id + ")\">删除订单</span>";
+                    }
+                    $('#footer').append(goodsTypeString);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+
+    // 取消订单、删除订单
+    function fnCancelOrder(that,paraO_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/del_order',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: paraO_id,
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code ==1){
+                    // $(that).parents('li').remove();
+                    api.toast({
+                        msg: '操作成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    setTimeout(function () {
+                        $('#wrapper').html('');
+                        // 刷新 全部、待付款的数据，并返回
+                        var jsfun = 'fnReturnInitData();';
+                        api.execScript({
+                            name: 'order_win',
+                            frameName: 'order_frm0',
+                            script: jsfun
+                        });
+                        var jsfun1 = 'fnReturnInitData();';
+                        api.execScript({
+                            name: 'order_win',
+                            frameName: 'order_frm1',
+                            script: jsfun1
+                        });
+                        api.closeWin();
+                    },500);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+    // 付款
+    function fnpayMoney(totalVal,paraO_id) {
+        api.openFrame({
+            name: 'payment_frm',
+            url: '../payment_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                o_id: paraO_id,
+                ifOrderType: 1, // 是否是从订单页发起的付款，否则是商品详情发起的付款
+                totalPrice: totalVal, // 总价
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.1)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    }
+    // 查看详情
+    function fnSeeDetails(paraO_id) {
+        api.openWin({
+            name: 'orderDetails_win',
+            url: './orderDetails_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+    // 查看物流
+    function fnSeeGoods(paraO_id) {
+        api.openWin({
+            name: 'logistics_win',
+            url: './logistics_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+    // 确认收货
+    function fnConfirmGoods(paraO_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Order/order_tic',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: paraO_id,
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                var data = ret.data;
+                if(ret.code == 1){
+                    api.toast({
+                        msg: '确认成功',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    // 重载数据
+                    setTimeout(function () {
+                        // 初始化数据请求
+                        $('#wrapper').html('');
+                        fnInitData();
+                    },500);
+                } else {
+                    api.toast({
+                        msg: data.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+    // 去评价
+    function fnEvaluation(paraO_id) {
+        api.openWin({
+            name: 'orderEvaluation_win',
+            url: './orderEvaluation_win.html',
+            pageParam: {
+                o_id: paraO_id
+            }
+        });
+    }
+
+    // 跳转商品详情
+    function fnOpenGoodDetails() {
+        api.openWin({
+            name: 'goodsDetails_win',
+            url: '../goodsDetails_win.html',
+            pageParam: {
+                goods_id: goodsId
+            }
+        });
+    }
+    // 取消订单确认框
+    function fnDalog(that, paraO_id) {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: '提示',
+                content: '是否确认操作',
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 20,
+                    icon: 'widget://res/gou.png',
+                    iconSize: 40,
+                    titleSize: 14,
+                    titleColor: '#000'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#f3f3f3',
+                    color: '#E4084B',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#E4084B',
+                    size: 12,
+                    color: '#fff',
+                }
+            }
+        }, function(ret) {
+            // var dialogBox = api.require('dialogBox');
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            } else {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                fnCancelOrder(that, paraO_id);
+            }
+        });
+    }
+</script>
+
+</html>

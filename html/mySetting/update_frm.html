@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>检查更新</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        #wrapper {
+            text-align: center;
+            font-size: 14px;
+            padding: 0 32px 24px;
+            height: 100%;
+        }
+
+        .logo {
+            width: 123px;
+            height: 123px;
+            border-radius: 50%;
+            margin-top: 120px;
+        }
+
+        .updata {
+            color: #38596C;
+            width: 125px;
+            height: 34px;
+            line-height: 34px;
+            margin: 0 auto;
+            margin-top: 34px;
+            border:1px solid #38596C;
+            border-radius: 5px;
+        }
+
+        .text {
+            display: none;
+            text-align: left;
+            color: #646464;
+            margin-top: 24px;
+        }
+        .text p {
+            margin-top: 10px;
+        }
+        .version {
+            position: absolute;;
+            bottom: 30px;
+            width: 80%;
+            margin:0 auto;
+            text-align: center;
+            color: #38596C;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <img class="logo" src="../../image/APPLogo.png" alt="">
+        <div class="updata" onclick="fnUpData()">检查更新</div>
+        <div class="text">
+            <span>版本介绍</span>
+            <p>版本介绍版本介绍版本介绍版本介绍版本介绍版本介绍版本介绍版本介绍版本介绍版本介绍</p>
+        </div>
+        <div class="version">当前版本1.0.1</div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+    };
+    function fnUpData() {
+        api.toast({
+            msg: '已为最新版本',
+            duration: 2000,
+            location: 'bottom'
+        });
+        // $('.text').css('display','block');
+        // $('.updata').text('下载更新');
+    }
+</script>
+
+</html>

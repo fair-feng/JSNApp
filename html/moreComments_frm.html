@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>全部评价</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        /* 评价 */
+        .evaluation {
+            padding: 0 15px;
+        }
+        .evaluation li {
+            padding: 10px 0;
+            font-size: 12px;
+            color: #464646;
+            border-bottom: 1px solid #F3F3F3;
+        }
+
+        .evaluation .top .userLogin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+        .evaluation .top .userId {
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+        .evaluation .top icon {
+            color: #d3b56f;
+            font-size: 12px;
+        }
+        .evaluation .top .date {
+            float: right;
+            color: #c3c3c3;
+            margin-top: 12px;
+        }
+        .evaluation .right {
+            width: 100%;
+            margin-left: 14px;
+        }
+        .evaluation .right .con {
+            margin-top: 12px;
+            line-height: 18px;
+        }
+        .evaluation .right .commentsImg {
+            margin-top: 20px;
+            margin-bottom: 3px;
+            font-size: 0;
+        }
+
+        .evaluation .right .commentsImg img {
+            width: 75px;
+            height: 75px;
+            border-radius: 5px;
+            margin-right: 8px;
+        }
+
+        .noComments {
+            margin-top: 35vh;
+        }
+
+        .noComments .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noComments .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+        /* 蒙版 */
+        #mask {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, .6);
+            text-align: center;
+            line-height: 100vh;
+        }
+
+        #mask .maskImg {
+            max-width: 80%;
+            border-radius: 3px;
+        }
+        /* 总评分 */
+        .evalTotal {
+            padding: 18px 15px;
+            border-bottom: 1px solid #ecedee;
+        }
+        .evalTotal .top {
+            display: flex;
+            justify-content: space-between;
+            color: #d3b56f;
+        }
+        .evalTotal .left {
+            font-size: 16px;
+        }
+        .evalTotal .top > span {
+            font-size: 13px;
+            margin-top: 3px;
+        }
+        .evalTotal .content li {
+            display: inline-block;
+            background: #eeeeee;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-top: 10px;
+            color: #737373;
+        }
+        .evalTotal .content li.active {
+            color: #fff;
+            background: #d3b56f;
+        }
+        /* 更多 */
+        .evalTotal .moreBlock {
+            text-align: center;
+            padding: 12px 0;
+            color: #b3b3b3;
+        }
+        .content {
+            height: 45px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="evalTotal">
+        </div>
+    </div>
+</body>
+<script id="indexTemp" type="text/x-dot-template">
+    <div class="evalTotal">
+        <div class="top">
+            <div class="left">
+                <span>评分：</span>
+                {{ for(var i = 0;i < it.score; i++){ }}
+                    <icon class="iconfont icon-yduixingxingshixin"></icon>
+                {{ } }}
+                {{ for(var i = 0;i < 5 - it.score; i++){ }}
+                    <icon class="iconfont icon-yduixingxingkongxin"></icon>
+                {{ } }}
+            </div>
+        </div>
+        <ul class="content">
+            {{~it.label:value:index}}
+                <li onclick="fnActive(this)">{{= value.name}}({{= value.num}})</li>
+            {{~}}
+        </ul>
+        <div class="moreBlock" onclick="fnMore(this)">
+            <icon class="iconfont icon-jiantou8"></icon>
+        </div>
+    </div>
+    <ul class="evaluation">
+        {{~it.list:value:index}}
+             <li>
+                 <div class="top">
+                     <img class="userLogin" src="{{= $api.reqUrl + value.user_img}}" alt="">
+                     <span class="userId">{{= value.user_name}}</span>
+                    {{ for(var i = 0;i < value.e_xs; i++){ }}
+                        <icon class="iconfont icon-yduixingxingshixin"></icon>
+                    {{ } }}
+                    {{ for(var i = 0;i < 5 - value.e_xs; i++){ }}
+                        <icon class="iconfont icon-yduixingxingkongxin"></icon>
+                    {{ } }}
+                     <span class="date">{{= value.e_date.split(' ')[0]}}</span>
+                 </div>
+                <div class="right">
+                    <p class="con">{{= value.e_content}}</p>
+                    {{? value.e_img }}
+                        <div class="commentsImg">
+                            {{~value.e_img:img:ind}}
+                                <img onclick="fnBigImg(this)" src="{{= $api.reqUrl + img}}" alt="">
+                            {{~}}
+                        </div>
+                    {{?}}
+                </div>
+            </li>
+        {{~}}
+    </ul>
+    {{? it.list.length < 1}}
+        <div class="noComments">
+            <div class="block">
+                <img src="../image/notComments@2x.png" alt="">
+                <span>暂无评论</span>
+            </div>
+        </div>
+    {{?}}
+    <div id="mask" onclick="fnMask(this)">
+        <img onclick="fnMaskImg(this)" class="maskImg" src="" alt="">
+    </div>
+</script>
+<script id="moreTemp" type="text/x-dot-template">
+    {{~it:value:index}}
+         <li>
+             <div class="top">
+                 <img class="userLogin" src="{{= $api.reqUrl + value.user_img}}" alt="">
+                 <span class="userId">{{= value.user_name}}</span>
+                {{ for(var i = 0;i < value.e_xs; i++){ }}
+                    <icon class="iconfont icon-yduixingxingshixin"></icon>
+                {{ } }}
+                {{ for(var i = 0;i < 5 - value.e_xs; i++){ }}
+                    <icon class="iconfont icon-yduixingxingkongxin"></icon>
+                {{ } }}
+                 <span class="date">{{= value.e_date.split(' ')[0]}}</span>
+             </div>
+            <div class="right">
+                <p class="con">{{= value.e_content}}</p>
+                {{? value.e_img }}
+                    <div class="commentsImg">
+                        {{~value.e_img:img:ind}}
+                            <img onclick="fnBigImg(this)" src="{{= $api.reqUrl + img}}" alt="">
+                        {{~}}
+                    </div>
+                {{?}}
+            </div>
+        </li>
+    {{~}}
+    {{? it.length < 1}}
+        <div class="noComments">
+            <div class="block">
+                <img src="../image/notComments@2x.png" alt="">
+                <span>暂无评论</span>
+            </div>
+        </div>
+    {{?}}
+</script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        //  初始化数据请求
+        fnMoreComments(0);
+        // 上拉加载
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function(ret, err) {
+            toDoRequest();
+        });
+    };
+    // 上拉加载
+    function toDoRequest() {
+        fnMoreComments(1);
+    }
+    // 分页的页码数
+    var pNum = 1;
+    var paraTerm;
+    function fnMoreComments(para,that) {
+        // 下拉
+        if (para == 2) {
+            // $('.evaluation').html('');
+            pNum = 1;
+        }
+        if(that){
+            paraTerm = $(that).html();
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/Goods/evaluate_app',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: api.pageParam.userId,
+                    p: pNum,
+                    term: paraTerm
+                },
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            if (ret) {
+                // 默认加载时、下拉时
+                if (para == 0 || para == 2) {
+                    if(ret.code == 1) {
+                        pNum++;
+                        if(paraTerm){
+                            var arrText = doT.template($('#moreTemp').text());
+                            $('.evaluation').html(arrText(ret.data.list));
+                        } else {
+                            var arrText = doT.template($('#indexTemp').text());
+                            $('#wrapper').html(arrText(ret.data));
+                        }
+
+                    }
+                }
+
+                // 上拉时
+                if (para == 1) {
+                    if(ret.code == 1){
+                        if(ret.data.list.length == 0){
+                            api.toast({
+                                msg: '没有数据了',
+                                duration: 2000,
+                                location: 'bottom'
+                            });
+                        } else {
+                            pNum++;
+                            var arrText = doT.template($('#moreTemp').text());
+                            $('.evaluation').append(arrText(ret.data.list));
+                        }
+                    }
+                }
+            }
+        });
+    }
+    var activeIndex;
+    function fnActive(that) {
+        pNum = 1;
+        if(activeIndex == $(that).index()) {
+            return
+        } else {
+            activeIndex = $(that).index();
+            $(that).siblings('li').removeClass('active');
+            $(that).addClass('active');
+            fnMoreComments(0,that);
+        }
+    }
+    // 图片放大
+    function fnBigImg(that) {
+        $('#mask').css('display', 'block');
+        var imgUrl = $(that).attr('src');
+        $('.maskImg').attr('src', imgUrl);
+
+        $('body').css({
+            "overflow-y":"hidden",
+            // "height":"100%"
+        });
+        $('html').css({
+            "overflow-y":"hidden",
+            // "height":"100%"
+        });
+    }
+
+    function fnMask(that) {
+        $(that).css('display', 'none');
+        $('body').css({
+            "overflow-y":"auto",
+            // "height":"auto"
+        });
+        $('html').css({
+            "overflow-y":"auto",
+            // "height":"auto"
+        });
+    }
+    function fnMaskImg() {
+        $('#mask').css('display', 'none');
+        $('body').css({
+            "overflow-y":"auto",
+            // "height":"auto"
+        });
+        $('html').css({
+            "overflow-y":"auto",
+            // "height":"auto"
+        });
+    }
+    function fnMore(that) {
+        if($(that).children('icon').hasClass('icon-jiantou8')){
+            $('.content').css('height','auto');
+            $(that).children('icon').removeClass('icon-jiantou8').addClass('icon-xiangshangjiantou');
+        } else {
+            $('.content').css('height','45px');
+            $(that).children('icon').removeClass('icon-xiangshangjiantou').addClass('icon-jiantou8');
+        }
+    }
+</script>
+
+</html>

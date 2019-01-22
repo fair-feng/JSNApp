@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+        #footer {
+            background-color: #FFFFFF;
+        }
+
+        #footer ul li {
+            color: #727071;
+            font-size: 12px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            text-align: center;
+            height: 46px;
+
+        }
+
+        #footer ul li.active {
+            color: #d3b56f;
+        }
+
+        #footer ul li i {
+            font-size: 20px;
+        }
+
+        .flex-con {
+            overflow: auto
+        }
+        /* 消息气泡 */
+        .radiusLi {
+            position: relative;
+        }
+
+        .radiusNum {
+            position: absolute;
+            top: 0;
+            min-width: 12px;
+            padding: 1px 2px;
+            background: #d3b56f;
+            border-radius: 10px;
+            color: #FFF;
+            font-size: 12px;
+            text-align: center;
+            left: 38px;
+        }
+        .wrapBg {
+            background: #333333;
+            margin-bottom: -5px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap" class="flex-wrap flex-vertical">
+        <div id="main" class="flex-con"></div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap wrapBg">
+                <li tapmode onclick="randomSwitchBtn( this );" class="flex-con active">
+                    <i class="iconfont icon-diamondzuanshi"></i>
+                    <p>首页</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i style="font-size:22px" class="iconfont icon-dianshangjiashangcheng-xianxing"></i>
+                    <p>商城</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con radiusLi">
+                    <i style="font-size:20px" class="iconfont icon-xiaoxi2"></i>
+                    <p>消息</p>
+                    <!-- 未读消息条数 -->
+                    <span class="radiusNum">0</span>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i style="font-size:20px" class="iconfont icon-zhihuishu"></i>
+                    <p>梧桐树</p>
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">
+                    <i class="iconfont icon-wode1"></i>
+                    <p>我的</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+        var localStorage = $api.getStorage('userToken');
+        if (!localStorage || localStorage == '') {
+            api.openWin({
+                name: 'login_frm',
+                url: 'html/login_frm.html',
+            });
+            return;
+        } else {
+            funIniGroup();
+        }
+        // 条数设置
+        confirmNum();
+        // 双击退出
+        var exitFlag = false;
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            if (!exitFlag) {
+                api.toast({
+                    msg: '再按一次退出',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                exitFlag = true;
+            } else {
+                api.closeWidget({
+                    silent: true
+                });
+            }
+            setTimeout(function() {
+                exitFlag = false;
+            }, 2000);
+        });
+    }
+    function funIniGroup() {
+        var eHeaderLis = $api.domAll('header li'),
+            frames = [];
+        // for (var i = 0, len = 5; i < len; i++) {
+        //     frames.push({
+        //         name: 'frame' + i,
+        //         url: './frame' + i + '.html',
+        //         bgColor: 'rgba(0,0,0,.2)',
+        //         bounces: false
+        //     })
+        // }
+        frames = [{
+            name: 'frame0',
+            url:'./frame0.html'
+        },{
+            // name: 'frame_shop',
+            // url:'./frame_shop.html'
+        },{
+            name: 'frame2',
+            url:'./frame2.html'
+        },{
+            name: 'friendsCircle',
+            url:'./friendsCircle.html'
+        },{
+            name: 'frame4',
+            url:'./frame4.html'
+        },]
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false, // 手势滑动切换
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: $api.dom('#main').offsetHeight
+            },
+            index: 0,
+            frames: frames,
+            preload: 1, // 预加载所有Frame
+        }, function(ret, err) {
+            // Frame切换完成的响应函数，更新分类菜单的选中状态
+            fnSetNavMenuSelected(ret.index);
+            if(ret.index == 1){
+                api.openWin({
+                    name: 'main_shop',
+                    url: './main_shop.html',
+                    pageParam: {
+                        ifSetIndex: 'true'
+                    }
+                });
+            }
+        });
+    }
+    // 切换底部选中状态
+    function fnSetNavMenuSelected(index_) {
+        var menus = $api.domAll('#footer li');
+        for (var i = 0; i < menus.length; i++) {
+            if (index_ == i) {
+                $api.addCls(menus[i], 'active');
+            } else {
+                $api.removeCls(menus[i], 'active');
+            }
+        }
+    }
+    // 随意切换按钮
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active')) return;
+        var eFootLis = $api.domAll('#footer li'),
+            eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                if($(tag).index() != 1){
+                    $api.removeCls(eFootLis[i], 'active');
+                }
+            }
+        }
+        // 点击事件
+        if (index == 1) {
+            api.sendEvent({
+                name: 'setIndex0',
+                extra: {
+                    ifSet: true,
+                }
+            });
+            api.openWin({
+                name: 'main_shop',
+                url: './main_shop.html',
+                pageParam: {
+                    name: 'test'
+                }
+            });
+        } else {
+            $api.addCls(eFootLis[index], 'active');
+            api.setFrameGroupIndex({
+                name: 'group',
+                index: index
+            });
+        }
+    }
+    // 是否登陆
+    function fnIfLogin(para) {
+        // 从缓存中获取用户信息
+        var userInfo = $api.getStorage('userInfo');
+        // 判断当前用户是否登录了
+        if (userInfo && userInfo.token) {
+            api.setFrameGroupIndex({
+                name: 'group',
+                index: para
+            });
+        } else {
+            api.setFrameGroupIndex({
+                name: 'group',
+                index: para
+            });
+            // 没有登录，打开登录Window
+            api.openWin({
+                name: 'login_win',
+                url: 'html/login_win.html',
+            });
+        }
+    }
+    // 信息条数设置
+    function confirmNum() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Msg/msg_count',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                $('.radiusNum').text(ret.data);
+            } else {
+                $('.radiusNum').css('display', 'none');
+            }
+        });
+    }
+</script>

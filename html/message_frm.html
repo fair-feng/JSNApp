@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>消息</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        .wrapper {
+            position: relative;
+            width: auto;
+            height: 80vh;
+            margin-top: 5px;
+            margin: 32px 20px 75px;
+            text-align: center;
+        }
+
+        .wrapper .logo {
+            width: 142px;
+            height: 100px;
+        }
+        .wrapper .text {
+            color: #1D1D1D;
+            font-size: 14px;
+            width: 210px;
+            margin: 0 auto;
+            margin-top: 50px;
+            text-align: left;
+        }
+        .wrapper .date {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            color:#696969;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <img class="logo" src="" alt="">
+        <p class="text"></p>
+        <span class="date"></span>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+        // 下拉刷新
+        api.setRefreshHeaderInfo(function(ret, err) {
+            //refresh event callback
+            toBottomRequest();
+        });
+    };
+    // 下拉刷新
+    function toBottomRequest() {
+        fnInitData();
+        // setTimeout(function() {
+        //     api.refreshHeaderLoadDone();
+        // }, 1000);
+    }
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Msg/index',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: api.pageParam.id
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code == 1){
+                    var data = ret.data;
+                    $('.text').html(data.message);
+                    $('.date').html(data.m_date);
+                    setTimeout(function() {
+                        api.refreshHeaderLoadDone();
+                    }, 500);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+
+    }
+</script>
+
+</html>

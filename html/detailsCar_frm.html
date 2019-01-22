@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>卡</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+        .wrapper {
+            padding: 5px 13px 0;
+        }
+
+        .wrapper img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .carText h3 {
+            font-size: 21px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .carText>div {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #191919;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <img class="bg" src="" alt="">
+        <div class="carText">
+            <h3></h3>
+            <div></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化请求数据
+        fnInitData();
+    };
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Index/mcard',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id:api.pageParam.id
+                },
+            }
+        },function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret) {
+                // 修改数据
+                var data = ret.data;
+                $('.carText > h3').html(data.name);
+                $('.carText > div').html(data.content);
+                $('.wrapper .bg').attr('src', $api.reqUrl + data.img)
+            }
+        });
+    }
+</script>
+
+</html>

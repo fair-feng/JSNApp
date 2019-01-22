@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>余额明细</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/iconfont.css">
+    <style>
+    body,html {
+        background: #F3F3F3;
+    }
+        header {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            background-color: #365365;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        header .center {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+        #ul {
+            display: -webkit-flex;
+            display: flex;
+            border-bottom: 2px solid #F3F3F3;
+            background: #fff;
+        }
+        #ul li {
+            width: 50%;
+            text-align: center;
+            height: 38px;
+            line-height: 38px;
+            font-size: 14px;
+        }
+        .publicRed {
+            color: #E4084B;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="left" onclick="api.closeWin();">
+            <i class="iconfont icon-fanhui"></i>
+        </div>
+        <div class="center">余额明细</div>
+    </header>
+    <ul id="ul">
+        <li class="publicRed" onclick="openFrame(this,'01')">收入</li>
+        <li onclick="openFrame(this,'02')">支出</li>
+    </ul>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // 加载frame
+        openFrame('','01');
+    };
+
+    function openFrame(that,para) {
+        if(that != ''){
+            $('#ul li').removeClass('publicRed ');
+            $(that).addClass('publicRed');
+        }
+        var header = $api.byId('header');
+        var headerH = $api.offset(header).h;
+        var ul = $api.byId('ul');
+        var ulH = $api.offset(ul).h;
+        api.openFrame({
+            name: 'balanceDetails'+ para +'_frm',
+            url: './balanceDetails'+ para +'_frm.html',
+            bgColor: 'rgba(0, 0, 0, 0.8)',
+            rect: {
+                x: 0,
+                y: headerH + ulH,
+                w: 'auto',
+                h: 'auto'
+            },
+            bounces: false, // 必须关闭此弹动，防止frm页面无法滚动
+            // pageParam: api.pageParam
+        });
+    }
+</script>
+
+</html>

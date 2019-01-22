@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>性别</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        #wrapper li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-top: 1px solid #F3F3F3;
+            background: #fff;
+        }
+
+        #wrapper li>span {
+            color: #404040;
+            font-size: 14px;
+            line-height: 25px;
+        }
+
+        #wrapper input[type="radio"]+label::before {
+            content: "\a0";
+            /*不换行空格*/
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 18px;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+            border: 1px solid #38596C;
+            text-indent: 3px;
+            line-height: 1;
+        }
+
+        #wrapper input[type="radio"]:checked+label::before {
+            background-color: #38596C;
+            background-clip: content-box;
+            padding: 3px;
+            width: 10px;
+            height: 10px;
+        }
+
+        #wrapper input[type="radio"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        .title {
+            color: #404040;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="wrapper">
+        <li>
+            <span class="title">性别选择</span>
+        </li>
+        <li>
+            <span>男</span>
+            <div class="right">
+                <input type="radio" id="man" name="pay" value="1">
+                <label for="man"></label>
+            </div>
+        </li>
+        <li>
+            <span>女</span>
+            <div class="right">
+                <input type="radio" id="woman" name="pay" value="2">
+                <label for="woman"></label>
+            </div>
+        </li>
+    </ul>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        if(api.pageParam.sex == '男'){
+            $('#man').prop('checked',true)
+        } else {
+            $('#woman').prop('checked',true)
+        }
+    };
+
+    function fnSave() {
+        var selectVal = $('#wrapper input[type="radio"]:checked') .val();
+        api.ajax({
+            url: $api.reqUrl + 'Home/User/set_user',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    user_sex: selectVal
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if(ret.code == 1){
+                    api.toast({
+                        msg: '修改成功',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    setTimeout(function () {
+                        // 回调刷新个人资料数据
+                        var jsfun1 = 'fnInitData();';
+                        api.execScript({
+                            name: 'myData_win',
+                            frameName: 'myData_frm',
+                            script: jsfun1
+                        });
+                        api.closeWin();
+                    },500);
+                } else {
+                    api.toast({
+                        msg: '修改错误',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+            }
+        });
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>至尊卡列表</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+        /* 结算 */
+
+        #footer {
+            /*display: -webkit-flex;
+          display: flex;*/
+            /*display: none;*/
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #footer .left {
+            margin-left: 15px;
+            line-height: 38px;
+        }
+
+        #footer .left span {
+            color: #232424;
+            font-size: 16px;
+        }
+
+        #footer .right .sum {
+            display: inline-block;
+            font-size: 12px;
+            color: #232424;
+        }
+
+        #footer .right .balance {
+            display: inline-block;
+            background: #EB2D62;
+            font-size: 17px;
+            color: #fff;
+            width: 106px;
+            height: 38px;
+            line-height: 38px;
+            text-align: center;
+            margin-left: 15px;
+        }
+
+        #goodsList {
+            margin-bottom: 38px;
+        }
+        /* radio */
+
+        input[type="checkbox"]+label::before {
+            content: "\a0";
+            /*不换行空格*/
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 18px;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+            border: 1px solid #E4007F;
+            text-indent: 3px;
+            line-height: 1;
+            margin-top: -5px;
+            background: #fff;
+        }
+
+        input[type="checkbox"]:checked+label::before {
+            background-color: #E4007F;
+            background-clip: content-box;
+            padding: 3px;
+            width: 10px;
+            height: 10px;
+        }
+
+        input[type="checkbox"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        #goodsList li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            border-bottom: 1px solid #E8E8E8;
+            background: #fff;
+        }
+
+        #goodsList .checkbox label {
+            height: 80px;
+            line-height: 80px;
+        }
+
+        #goodsList .logo {
+            width: 80px;
+            height: 80px;
+            margin-right: 5px;
+        }
+
+        #goodsList .right .text {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 100%;
+            width: 205px;
+        }
+
+        .right .title {
+            color: #1C1C1C;
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .right .con {
+            color: #696969;
+            font-size: 12px;
+        }
+        .right .con span:nth-of-type(1) {
+            display: inline-block;
+            margin-right: 10px;
+            color: #EB2D62;
+        }
+        .checkbox {
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="goodsList">
+        <!-- <li>
+            <input id="${sc_id}" type="checkbox" onclick="fnSelece(this)">
+            <label class="select" for="${i}" ></label>
+            <img class="logo" src="../image/commodity@2x.png" alt="">
+            <div class="right">
+                <div class="text">
+                    <span class="title">撒打算的撒</span>
+                    <p class="con">158.00 <span>ddsads</span></p>
+                </div>
+            </div>
+        </li> -->
+    </ul>
+    <!-- 结算 -->
+    <div id="footer">
+        <div class="left">
+            <input id="selectAll" type="checkbox" onclick="fnselectAll(this)">
+            <label for="selectAll"></label>
+            <span>全选</span>
+        </div>
+        <div class="right">
+            <p class="sum" 偏远地区邮费另算</p>
+                <div class="balance" onclick="fnBalance()">结算</div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        initDataGoods();
+    };
+
+    // 弹出文字内容
+    var alertText = '';
+    // 商品数据
+    function initDataGoods() {
+        $('#goodsList').html('');
+        api.ajax({
+            url: $api.reqUrl + 'Home/Index/vip_g_list',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                var data = ret.data.list;
+                var url = $api.reqUrl;
+                alertText = ret.data.msg;
+                for (var i = 0; i < data.length; i++) {
+                    var cheContent = '';
+                    if (data[i].linqv == false) {
+                        cheContent = '<div class="checkbox">\
+                             <input id="' + data[i].g_price_id + '" type="checkbox" onclick=fnSelece(this)>\
+                             <label for="' + data[i].g_price_id +
+                            '"></label>\
+                         </div>';
+                    } else {
+                        cheContent = '<div class="checkbox">已领取</div>'
+                    }
+                        var string = '<li>' + cheContent +
+                                        '<img class="logo" src="'+url + data[i].goods_img+'" alt="">\
+                                        <div class="right">\
+                                            <div class="text">\
+                                                <span class="title">'+data[i].goods_name+'</span>\
+                                                <p class="con"><span>￥:'+data[i].goods_price+'</span><span>'+(Number(data[i].goods_sales_f) + Number(data[i].goods_sales))+'人付款</span></p>\
+                                            </div>\
+                                        </div>\
+                                    </li>'
+                    $('#goodsList').append(string);
+                }
+            }
+        });
+    }
+    //   全选
+    function fnselectAll(that) {
+        if ($(that).is(':checked')) {
+            $("#goodsList input[type='checkbox']").prop("checked", true);
+        } else {
+            $("#goodsList input[type='checkbox']").prop("checked", false);
+        }
+    }
+    // 单选
+    function fnSelece(that) {
+        if ($("#goodsList input[type='checkbox']").length === $("#goodsList input:checked").length) {
+            $("#selectAll").prop("checked", true);
+        } else {
+            $("#selectAll").prop("checked", false);
+        }
+
+    }
+    //   点击编辑
+    function fnEditor() {
+        if ($('#footer').css('display') == 'none') {
+            $('#footer').css({
+                'display': '-webkit-flex',
+                'display': 'flex',
+            });
+            var jsfun = 'setRightText(1);';
+            api.execScript({
+                script: jsfun
+            });
+            $('#goodsList .checkbox').css('display', 'block');
+        } else {
+            $('#footer').css({
+                'display': 'none',
+            });
+            var jsfun = 'setRightText(0);';
+            api.execScript({
+                script: jsfun
+            });
+            $('#goodsList .checkbox').css('display', 'none');
+        }
+    }
+    // 结算
+    function fnBalance() {
+        // 判断是否选中商品
+        var ifGoodsSele = false;
+        // g_price_id
+        var gPriceId = '';
+        // 商品数量
+        for (var i = 0; i < $('#goodsList li').length; i++) {
+            var goods = $('#goodsList li').eq(i).find('input:checked').is(':checked');
+            if (goods) {
+                var stringSc = $('#goodsList li').eq(i).find('input:checked').attr('id');
+                ifGoodsSele = true;
+                if (gPriceId == '') {
+                    gPriceId += stringSc;
+                } else {
+                    gPriceId += ',' + stringSc;
+                }
+            }
+        }
+        if (ifGoodsSele == false) {
+            api.toast({
+                msg: '请选择商品',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        api.openWin({
+            name: 'submitOrder_win',
+            url: './submitOrder_win.html',
+            pageParam: {
+                joinType: 2, // 1购物车 2立即购买 order/index
+                price_id: gPriceId,
+                vipType: 1, // 1至尊卡 2小分卡购买
+                // goodsNum:1, // 默认至尊卡商品每种只能买一件
+            }
+        });
+    }
+    // 提示框
+    setTimeout(function () {
+        fnAlert();
+    },500);
+
+    function fnAlert() {
+        if(alertText.length<1){
+            return
+        }
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: '提示',
+                content: alertText,
+                // leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 20,
+                    icon: 'widget://res/gou.png',
+                    iconSize: 40,
+                    titleSize: 14,
+                    titleColor: '#000'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                // left: {
+                //     marginB: 7,
+                //     marginL: 20,
+                //     w: 130,
+                //     h: 35,
+                //     corner: 2,
+                //     bg: '#e0e',
+                //     size: 12
+                // },
+                right: {
+                    marginB: 7,
+                    marginL: 80,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#E4084B',
+                    size: 12,
+                    color: '#fff',
+                }
+            }
+        }, function(ret) {
+            if (ret.eventType == 'right') {
+                var dialogBox = api.require('dialogBox');
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>添加、编辑地址</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        .wrapper li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #F3F3F3;
+            background: #fff;
+            font-size: 14px;
+            color: #404040;
+        }
+
+        .wrapper li input[type=text] {
+            width: 70%;
+            margin-left: 30px;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .addre .right {
+            width: 70%;
+            text-align: left;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .addre .right input {
+            margin-left: 0!important;
+        }
+        /* 保存 */
+
+        .footer {
+            background: #d3b56f;
+            border-radius: 5px;
+            height: 43px;
+            line-height: 43px;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 58px;
+        }
+
+        .addre .right>input {
+            width: 90%!important;
+        }
+
+        input[type="checkbox"]+label::before {
+        	content: "\a0";
+        	/*不换行空格*/
+        	display: inline-block;
+        	vertical-align: middle;
+        	font-size: 18px;
+        	width: 15px;
+        	height: 15px;
+        	margin-right: 5px;
+        	border-radius: 50%;
+        	border: 1px solid #eaeaea;
+        	text-indent: 3px;
+        	line-height: 1;
+        	/*margin-top: -5px;*/
+        }
+
+        input[type="checkbox"]:checked+label::before {
+        	background-color: #d3b56f;
+        	background-clip: content-box;
+        	padding: 3px;
+        	width: 10px;
+        	height: 10px;
+        }
+
+        input[type="checkbox"] {
+        	position: absolute;
+        	clip: rect(0, 0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="wrapper">
+        <li>
+            <span>收件人</span>
+            <input class="names" type="text" placeholder="收件人的姓名">
+        </li>
+        <li>
+            <span>联系方式</span>
+            <input class="phone" type="text" placeholder="手机号码" onkeyup="value=value.replace(/[^\d]/g,'')" maxlength="11">
+        </li>
+        <li class="addre">
+            <span>所在地区</span>
+            <div class="right" id="selectAddre" onclick="fnOpenSelectAddre()">
+                <input class="address" type="text" value="" disabled placeholder="请选择">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li>
+            <span>详细地址</span>
+            <input class="addDetails" type="text" placeholder="街道，门牌号等" maxlength="56" minlength>
+        </li>
+        <!-- <li>
+            <span>设为默认地址</span>
+            <div>
+                <input type="checkbox" id="1" name="addre" value="1">
+                <label for="1"></label>
+            </div>
+        </li> -->
+    </ul>
+    <div class="footer" onclick="fnSaveAddre()">保存</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 如果是编辑，请求数据
+        if (api.pageParam.type == 'edit') {
+            fnGetEditAddre();
+        }
+
+    };
+    // var addres = ''; // 省市县
+    var city_id = '';
+    //   保存操作
+    function fnSaveAddre() {
+        // 姓名验证
+        var usersName = /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/;
+        // 手机号验证
+        var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+        if (!usersName.test($('.names').val())) {
+            api.toast({
+                msg: '请输入正确的收货人姓名',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        } else if ($('.addre .address').val() == '') {
+            api.toast({
+                msg: '请选择省市区',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        } else if ($('.addDetails').val() == '') {
+            api.toast({
+                msg: '请输入详细地址',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        } else if ($('.addDetails').val().length < 5) {
+            api.toast({
+                msg: '详细地址长度过短',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        } else if ($('.phone').val() == '') {
+            api.toast({
+                msg: '请输入手机号',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        } else if (!reg.test($('.phone').val())) {
+            api.toast({
+                msg: '请输入正确的手机号',
+                duration: 2000,
+                location: 'middle'
+            });
+            return;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/edit_city',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    name: $('.names').val(),
+                    phone: $('.phone').val(),
+                    // city: addres,
+                    city: $('.addre .address').val(),
+                    city_xq: $('.addDetails').val(),
+                    city_state: 0,
+                    id: city_id
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                // 清空
+                $('.names').val('');
+                $('.phone').val('');
+                $('.address').val('');
+                $('.addDetails').val('');
+                api.toast({
+                    msg: '添加成功',
+                    duration: 2000,
+                    location: 'middle'
+                });
+
+                // api.openWin({
+                //     reload: true,
+                //     name: 'address_win',
+                //     url: './address_win.html',
+                // });
+                // 回调，刷新地址列表
+                var jsfun = 'fnInitData();';
+                api.execScript({
+                    name: 'address_win',
+                    frameName: 'address_frm',
+                    script: jsfun
+                });
+                api.closeWin();
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+    //   打开地区选择
+    function fnOpenSelectAddre() {
+        var addressView = api.require('addressView');
+        addressView.open({
+            file_addr: 'widget://res/city.txt', //数据源地址
+            selected_color: '#ff0000', //颜色
+            pro_id: 410000, //省id
+            city_id: 410100, //市id
+            dir_id: 410104 //区id
+        });
+        $api.addEvt($api.byId("selectAddre"), 'click', function() {
+            addressView.show({}, function(ret, err) {
+                if (ret.status) {
+                    var data = ret.data;
+                    var address = '';
+                    for (var i = 0; i < data.length; i++) {
+                        if (i >= 1) {
+                            address += '-' + data[i].name;
+                        } else {
+                            address += data[i].name;
+                        }
+                        // addres += data[i].name;
+                    }
+                    $('.addre .address').val(address);
+                }
+            });
+        });
+    }
+
+    // 获取编辑的信息
+    function fnGetEditAddre() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_city',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: api.pageParam.city_id
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                var data = ret.data;
+                if (ret.code == 1) {
+                    city_id = data.city_id;
+                    $('.names').val(data.name);
+                    $('.address').val(data.city);
+                    $('.addDetails').val(data.city_xq)
+                    $('.phone').val(data.phone);
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+
+                }
+            }
+        });
+
+    }
+</script>
+
+</html>

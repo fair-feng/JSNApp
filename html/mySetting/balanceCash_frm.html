@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>提现</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <!--<link rel="stylesheet" type="text/css" href="../../css/layer.css" />-->
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        .aliPay,
+        .bankCard {
+            display: none;
+        }
+
+        .aliPay li,
+        .bankCard li {
+            background: #fff;
+            padding: 12px 15px;
+            border-bottom: 1px solid #F3F3F3;
+            color: #383838;
+            font-size: 14px;
+        }
+
+        .aliPay li:first-child {
+            border-bottom: 6px solid #F3F3F3;
+        }
+        /* 提现钱数选择 */
+
+        .cashMoney {
+            padding: 0 29px;
+            /*margin: 25px 0;*/
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .cashMoney li {
+            width: 144px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid #E4084B;
+            font-size: 14px;
+            color: #E4084B;
+            margin-top: 12px;
+        }
+
+        .custom {
+            padding: 0 18px;
+            color: #383838;
+            font-size: 14px;
+            margin-top: 35px;
+        }
+
+        .custom input {
+            outline: none;
+            border-bottom: 1px solid #B5B5B5;
+            text-align: center;
+        }
+        /* 提现按钮 */
+
+        .cashBtn {
+            height: 43px;
+            line-height: 43px;
+            text-align: center;
+            font-size: 16px;
+            color: #fff;
+            background: #E4084B;
+            border-radius: 6px;
+            margin: 34px 15px;
+        }
+
+        .active {
+            background: #E4084B;
+            color: #fff !important;
+        }
+
+        .aui-dialog-footer {
+            background-image: -webkit-linear-gradient(90deg, #E4084B, #E4084B 50%, transparent 50%);
+        }
+
+        .aui-dialog-footer .aui-dialog-btn:first-child {
+            color: #E4084B;
+        }
+
+        .aui-dialog-footer .aui-dialog-btn:last-child {
+            border-bottom-right-radius: .3rem;
+            background: #E4084B;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="aliPay">
+        <li>
+            <span>提现账号信息</span>
+        </li>
+        <li>
+            账号：<span class="account"></span>
+        </li>
+        <li>
+            姓名：<span class="name"></span>
+        </li>
+    </ul>
+    <ul class="bankCard">
+        <li>
+            银行卡号：<span class="card"></span>
+        </li>
+        <li>
+            开户银行：<span class="cardName"></span>
+        </li>
+        <li>
+            开户姓名：<span class="name"></span>
+        </li>
+    </ul>
+    <!-- 提现钱数选择 -->
+    <ul class="cashMoney">
+        <li money="10" class="active">提现10元</li>
+        <li money="20">提现20元</li>
+        <li money="30">提现30元</li>
+        <li money="50">提现50元</li>
+        <li money="100">提现100元</li>
+        <li money="200">提现200元</li>
+        <li money="300">提现300元</li>
+        <li money="500">提现500元</li>
+        <li money="1000">提现1000元</li>
+    </ul>
+    <div class="custom">
+        <span>自定义金额</span>
+        <input class="val" type="number">
+    </div>
+    <div class="cashBtn" onclick="fnCash()">提现</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<!--<script type="text/javascript" src="../../script/layer.js"></script>-->
+<script type="text/javascript" src="../../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        if (api.pageParam.type == 1) {
+            $('.aliPay').css('display', 'block');
+        } else {
+            $('.bankCard').css('display', 'block');
+        }
+        // 请求账户数据
+        fnAjax();
+    };
+    // 全局卡ID
+    var cardId = '';
+    // 列表点击事件
+    var index = 0;
+    $('.cashMoney li').click(function() {
+        if ($(this).index() != index) {
+            $('.cashMoney li').eq(index).removeClass('active');
+        }
+        $(this).addClass('active');
+        index = $(this).index();
+    });
+    // 提现
+    function fnCash() {
+        var ifSetConform = '';
+        if (api.pageParam.type == 1) {
+            ifSetConform = $('.aliPay .name').text();
+        } else if (api.pageParam.type == 2) {
+            ifSetConform = $('.bankCard .name').text();
+        }
+        if (ifSetConform == '' || !ifSetConform) {
+            fnConfirmSure();
+        } else {
+            var cashMoney = $('.custom .val').val();
+            var moneyVal = '';
+            if (cashMoney.length > 0) {
+                moneyVal = cashMoney;
+            } else {
+                moneyVal = $('.cashMoney .active').attr('money');
+            }
+            fnConfirm(moneyVal);
+        }
+    }
+    // 提交信息
+    function fnCashAjax(moneyVal) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Money/takeMoney',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    type: api.pageParam.type,
+                    money: moneyVal,
+                    id: cardId
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    api.toast({
+                        msg: '提现申请成功,请等待...',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    $('.custom .val').val('');
+                } else {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+    // 获取信息
+    function fnAjax() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Money/take',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    type: api.pageParam.type
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    var data = ret.data;
+                    // 支付宝
+                    if (api.pageParam.type == 1) {
+                        $('.aliPay .account').html(data.number);
+                        $('.aliPay .name').html(data.name);
+                        cardId = data.id;
+                    }
+                    // 银行卡
+                    if (api.pageParam.type == 2) {
+                        $('.bankCard .card').html(data.bank_num);
+                        $('.bankCard .cardName').html(data.bank_name);
+                        $('.bankCard .name').html(data.name);
+                        cardId = data.bank_id;
+                    }
+                }
+            }
+        });
+    }
+    var dialog = new auiDialog({});
+    // 提现弹出框
+    function fnConfirm(moneyVal) {
+        dialog.alert({
+            title: "",
+            msg: '确认提现' + moneyVal + '元',
+            buttons: ['我在想想', '我想好了']
+        }, function(ret) {
+            if (ret.buttonIndex == 2) {
+                fnCashAjax(moneyVal);
+            }
+        })
+    }
+    // 信息绑定弹出框
+    function fnConfirmSure() {
+        dialog.alert({
+            title: "",
+            msg: '未设置提现信息，去设置？',
+            buttons: ['取消', '确定']
+        }, function(ret) {
+            if (ret.buttonIndex == 2) {
+                api.openWin({
+                    name: 'cash_win',
+                    url: '../myInform/cash_win.html',
+                });
+                if (api.pageParam.type == 1) {
+                    api.closeWin({
+                        name: 'balanceAliPayCash_win',
+                        animation: {
+                            type: "none",
+                            subType: "from_right",
+                            duration: 100
+                        }
+                    });
+                } else {
+                    api.closeWin({
+                        name: 'balanceBankCardCash_win',
+                        animation: {
+                            type: "none",
+                            subType: "from_right",
+                            duration: 100
+                        }
+                    });
+                }
+            }
+        })
+    }
+</script>
+
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>我的信息</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        #wrapper li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-top: 1px solid #F3F3F3;
+            background: #fff;
+        }
+
+        #wrapper li>span {
+            color: #404040;
+            font-size: 14px;
+            line-height: 25px;
+        }
+
+        .right {
+            font-size: 0;
+        }
+
+        .right .userLogin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 0;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .right>span {
+            font-size: 14px;
+            line-height: 25px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        #wrapper li .logoText {
+            line-height: 40px;
+        }
+        .right i {
+            vertical-align: middle;
+            color: #A9A9A9;
+        }
+
+        .exitLogin {
+            background: #38596C;
+            color: #fff;
+            font-size: 17px;
+            border-radius: 5px;
+            margin-left: 10px;
+            margin-right: 10px;
+            padding: 12px 0;
+            text-align: center;
+            margin-top: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="wrapper">
+        <li onclick="fnSetImg()">
+            <span class="logoText">头像</span>
+            <div class="right">
+                <img class="userLogin" src="" alt="">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnSetUserName(this)">
+            <span>昵称</span>
+            <div class="right">
+                <span class="userName"></span>
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnSex(this)">
+            <span>性别</span>
+            <div class="right">
+                <span class="userSex"></span>
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li>
+            <span>手机号</span>
+            <div class="right">
+                <span class="userPhone"></span>
+                <!-- <i class="iconfont icon-gengduo"></i> -->
+            </div>
+        </li>
+        <li onclick="fnCash()">
+            <span>提现设置</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnForgotPassWord()">
+            <span>修改密码</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnAddress()">
+            <span>收货地址</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+    </ul>
+    <div class="exitLogin" onclick="exitLogin()">退出登录</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据请求
+        fnInitData();
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+    };
+
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/User/user_info',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if(ret.code !=1){
+                    return;
+                }
+                var data = ret.data;
+                $('.userLogin').attr('src', $api.reqUrl + data.user_img);
+                $('.userName').html(data.user_name);
+                if(data.user_sex == 1){
+                    $('.userSex').html('男');
+                } else {
+                    $('.userSex').html('女');
+                }
+
+                $('.userPhone').html(data.user_phone);
+            }
+        });
+    }
+    //   收货地址
+    function fnAddress() {
+        api.openWin({
+            name: 'address_win',
+            url: './address_win.html',
+            pageParam: {
+                type: 'myData'
+            }
+        });
+    }
+    //   退出登录
+    function exitLogin() {
+        fnConfirm();
+    }
+    // 修改头像
+    function fnSetImg() {
+        api.getPicture({
+            sourceType: 'album', // 来源
+            encodingType: 'jpg', // 类型
+            mediaValue: 'pic', // 视频还是图片
+            destinationType: 'base64', // 返回路径还是base64
+            allowEdit: true, // 图片编辑
+            quality: 50, // 图片质量
+            // targetWidth: 100,
+            // targetHeight: 100,
+            saveToPhotoAlbum: false
+        }, function(ret, err) {
+            if (ret) {
+                var imgDataBase = ret.base64Data;
+                fnUpImg(imgDataBase);
+            }
+        });
+    }
+    // 上传图片到后台
+    function fnUpImg(imgDataBase) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/User/set_user',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    user_img: imgDataBase,
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == 1) {
+                    $('.userLogin').attr('src',imgDataBase);
+                    api.toast({
+                        msg: '修改成功',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    // 回调刷新个人资料数据
+                    var jsfun1 = 'fnInitData();';
+                    api.execScript({
+                        name: 'main_win',
+                        frameName: 'frame4',
+                        script: jsfun1
+                    });
+                }
+            }
+        });
+    }
+    // 修改昵称
+    function fnSetUserName(that) {
+        api.openWin({
+            name: 'setUserName_win',
+            url: 'myInform/setUserName_win.html',
+            pageParam: {
+                name: $(that).find('.userName').html()
+            }
+        });
+    }
+    // 修改性别
+    function fnSex(that) {
+        api.openWin({
+            name: 'setSex_win',
+            url: 'myInform/setSex_win.html',
+            // reload: true,
+            pageParam: {
+                sex: $(that).find('.userSex').html()
+            }
+        });
+    }
+    // 忘记密码
+    function fnForgotPassWord() {
+        api.openWin({
+            name: 'password_win',
+            url: 'myInform/password_win.html',
+        });
+    }
+    // 提现设置
+    function fnCash() {
+        api.openWin({
+            name: 'cash_win',
+            url: 'myInform/cash_win.html',
+        });
+    }
+    // 退出登录提示框
+    function fnConfirm() {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: '提示',
+                content: '是否确认退出',
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 20,
+                    icon: 'widget://res/gou.png',
+                    iconSize: 40,
+                    titleSize: 14,
+                    titleColor: '#000'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#f3f3f3',
+                    color: '#E4084B',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#E4084B',
+                    size: 12,
+                    color: '#fff',
+                }
+            }
+        }, function(ret) {
+            var dialogBox = api.require('dialogBox');
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            } else {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                // 退出后操作
+                // 保存用户信息
+                $api.setStorage('userToken', '');
+                // 保存手机号、在个人资料中设置默认手机号
+                $api.setStorage('userPhone', '');
+                // user_invita 邀请编号
+                $api.setStorage('userInvita', '');
+                api.openWin({
+                    name: 'login_frm',
+                    url: './login_frm.html',
+                    animation:{
+                       type:"none",
+                       subType:"from_right",
+                       duration:300
+                    }
+                });
+                api.closeWin();
+            }
+        });
+    }
+</script>
+</html>

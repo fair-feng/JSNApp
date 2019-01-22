@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>银行卡提现</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+        .row {
+            background: #fff;
+            width: auto;
+            box-sizing: border-box;
+            padding: 18px 15px;
+            border-bottom: 1px solid rgb(230, 230, 230);
+        }
+        .row span {
+            color: #2B2B2B;
+            font-size: 15px;
+            vertical-align: bottom;
+        }
+        .wrapper input {
+            outline: none;
+            float: right;
+            text-align: right;
+            color: #959595;
+            font-size: 12px;
+        }
+        .wrapper > .btn {
+            width: auto;
+            height: 40px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-top: 150px;
+            background-color: #38596C;
+            line-height: 40px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .wrapper > .text {
+            padding: 0 15px;
+            color: #959595;
+            font-size: 12px;
+            margin-top: 25px;
+        }
+        .wrapper > .text p {
+            line-height: 24px;
+        }
+        .wrapper > .text p:nth-of-type(1) {
+            margin-top: 10px;
+        }
+        .red {
+            color: #E4084B;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="row">
+            <span>银行卡号：</span>
+            <input id="usercard" class="input" maxleng="20" type="text" placeholder="请输入您的银行卡号" onkeyup="this.value=this.value.replace(/[^\d]/g,'')">
+        </div>
+        <div class="row">
+            <span>开户银行：</span>
+            <input id="userbank" class="input" maxlength="25" type="text" placeholder="请输入开户卡号所属银行">
+        </div>
+        <div class="row">
+            <span>开户姓名：</span>
+            <input id="username" class="input" maxlength="25" type="text" placeholder="请输入开户银行所对应的开户人姓名">
+        </div>
+        <div class="btn" tapmode="highlight" onclick="fnConfirmInfo();">确认信息</div>
+        <div class="text">
+            <span>注意：</span>
+            <p>1.银行卡信息必须<span class="red">实名认证</span>，否则无法提现申请.</p>
+            <p>2.请认真核对填写信息，账户信息<span class="red">一旦提交,不可自行更改</span>必须联系在线客服人工修改.</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+
+    };
+    //   确认信息
+    function fnConfirmInfo() {
+        var usercard = $('#usercard').val();
+        var userbank = $('#userbank').val();
+        var username = $('#username').val();
+        if(usercard == ''){
+            api.toast({
+                msg: '请输入银行卡号',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        if(userbank == ''){
+            api.toast({
+                msg: '请输入所属银行',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        if(username == ''){
+            api.toast({
+                msg: '请输入开户人姓名',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/add_bank',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    bank_num: usercard,
+                    inBank: userbank,
+                    name: username,
+                },
+            }
+        },function(ret, err){
+            // 清空
+            $('#usercard').val('');
+            $('#userbank').val('');
+            $('#username').val('');
+            if(ret.code == 1){
+                api.toast({
+                    msg: '绑定成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+                setTimeout(function () {
+                    api.closeWin();
+                },500);
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>我的分享</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        .wrapper {
+            text-align: center;
+        }
+
+        .title {
+            /*text-align: center;*/
+            font-size: 18px;
+            margin-top: 50px;
+        }
+
+        .fnGoShare {
+            width: auto;
+            height: 35px;
+            margin-left: 60px;
+            margin-right: 60px;
+            margin-top: 60px;
+            background-color: #E4084B;
+            line-height: 35px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .twoCode {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <p class="title">我的分享二维码</p>
+        <p class="user_invita"></p>
+        <img class="twoCode" src="" alt="">
+        <div class="fnGoShare" onclick="fnShare()">去分享</div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        fnGetCode();
+        var user_invita = $api.getStorage('user_invita');
+        $('.user_invita').text( '推广码：' + user_invita);
+    };
+    //   分享
+    function fnwxShare(type) {
+        var wx = api.require('wx');
+        var userInvita = $api.getStorage('userInvita');
+        wx.shareWebpage({
+            apiKey: '',
+            scene: type,
+            title: '君施秾商城',
+            description: '君施秾是一款商城类APP',
+            thumb: 'widget://image/APPLogo@2x.png',
+            contentUrl: $api.reqUrl + 'Home/Hreg/index/invita/' + userInvita
+        }, function(ret, err) {
+            if (ret.status) {
+                api.toast({
+                    msg: '分享成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.toast({
+                    msg: '取消分享',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+    //   获取个人二维码
+    function fnGetCode() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_qrcode',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                $('.twoCode').attr('src',$api.reqUrl + ret.data);
+            }
+        });
+    }
+    // 弹出分享选择框
+    function fnShare() {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.share({
+            tapClose: true,
+            rect: {
+                w: 300,
+                h: 150
+            },
+            items: [{
+                text: '微信好友',
+                icon: 'widget://image/share/wx.png'
+            }, {
+                text: '朋友圈',
+                icon: 'widget://image/share/wx-circle.png'
+            }, {
+                text: '微信收藏',
+                icon: 'widget://image/share/qq-friend.png'
+            }],
+            styles: {
+                bg: '#FFF',
+                corner: 10,
+                column: 3,
+                horizontalSpace: 15,
+                verticalSpace: 30,
+                itemText: {
+                    color: '#000',
+                    size: 15,
+                    marginT: 10
+                },
+                itemIcon: {
+                    size: 30
+                }
+            }
+        }, function(ret) {
+            var shareType = 'session';
+            if (ret.index == 0) {
+                shareType = 'session';
+            } else if (ret.index == 1) {
+                shareType = 'timeline';
+            } else if (ret.index == 2) {
+                shareType = 'favorite';
+            }
+            fnwxShare(shareType);
+        });
+    }
+</script>
+
+</html>

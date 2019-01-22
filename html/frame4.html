@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #F4F4F4;
+        }
+
+        .user {
+            width: 100%;
+            height: 240px;
+            background: url(../image/myBgs@2x.png) no-repeat;
+            background-size: 100% 100%;
+            font-size: 14px;
+        }
+
+        .user .userText {
+            text-align: right;
+            padding-top: 40px;
+            margin-right: 20px;
+            color: #fff;
+        }
+
+        .userBlock {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        .userBlock .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .userBlock p {
+            margin-top: 5px;
+        }
+        /* 订单 */
+
+        .order {
+            border-bottom: 1px solid #9D9D9D;
+            margin: 0 20px;
+            margin-top: -36px;
+            padding: 10px;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #272727;
+        }
+        /* 订单列表 */
+
+        .orderList {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #F4F4F4;
+            background: #fff;
+        }
+
+        .orderList li {
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            font-size: 13px;
+            color: #272727;
+            padding: 9px 0;
+        }
+
+        .orderList li>img {
+            margin: 0 auto;
+            margin-bottom: 5px;
+        }
+
+        .orderList img {
+            width: 25px;
+            height: 25px;
+            /*height: auto;*/
+        }
+        /* 功能列表 */
+
+        .conList li {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #F4F4F4;
+            padding: 10px 15px;
+            background: #fff;
+        }
+
+        .conList li>i {
+            color: grey;
+        }
+
+        .conList .left>i {
+            margin-right: 5px;
+            color: #437594;
+        }
+
+        .conList .left span {
+            color: #323232;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- user -->
+        <div class="user">
+            <p class="userText" onclick="fnOpenMyData()">个人资料</p>
+            <div class="userBlock">
+                <img class="logo" src="" alt="">
+                <p class="name"></p>
+                <p style="display:none;" class="tuiguang">代理编号：<span></span></p>
+            </div>
+        </div>
+        <!-- 订单 -->
+        <div class="order">
+            <span>我的订单</span>
+            <span onclick="fnSeeAllOrder()">查看订单</span>
+        </div>
+        <!-- 订单列表 -->
+        <ul class="orderList">
+            <li onclick="fnGoOrderList(this)">
+                <img src="../image/waitFK@2x.png" alt="">
+                <span>待付款</span>
+            </li>
+            <li onclick="fnGoOrderList(this)">
+                <img src="../image/waitFH@2x.png" alt="">
+                <span>待发货</span>
+            </li>
+            <li onclick="fnGoOrderList(this)">
+                <img src="../image/waitSH@2x.png" alt="">
+                <span>待收货</span>
+            </li>
+            <li onclick="fnGoOrderList(this)">
+                <img src="../image/waitPJ@2x.png" alt="">
+                <span>待评价</span>
+            </li>
+        </ul>
+        <!-- 功能列表 -->
+        <ul class="conList">
+            <li onclick="fnGoMyBanlance()">
+                <div class="left">
+                    <i class="iconfont icon-yue"></i>
+                    <span>我的余额</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnMyRecommend()">
+                <div class="left">
+                    <i class="iconfont icon-tuijian"></i>
+                    <span>我的推荐</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnMyCollect()">
+                <div class="left">
+                    <i class="iconfont icon-shoucang"></i>
+                    <span>我的收藏</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnUpdate()">
+                <div class="left">
+                    <i style="font-size:12px;" class="iconfont icon-clouddownload"></i>
+                    <span>版本更新</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnProblem()">
+                <div class="left">
+                    <i class="iconfont icon-wentifankui"></i>
+                    <span>问题反馈</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnAboutUs()">
+                <div class="left">
+                    <i class="iconfont icon-guanyuwomen"></i>
+                    <span>关于我们</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+            <li onclick="fnOpenShare()">
+                <div class="left">
+                    <i class="iconfont icon-fenxiang"></i>
+                    <span>我的分享</span>
+                </div>
+                <i class="iconfont icon-gengduo"></i>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+            // 初始化数据请求
+            fnInitData();
+        }
+        // 初始化数据请求(并为个人资料修改后的回调函数)
+    var user_vip = ''; // 是否是vip会员，1是则可以进入我的分享
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/User/user_info',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                var data = ret.data;
+                $('.userBlock .logo').attr('src', $api.reqUrl + data.user_img);
+                $('.userBlock .name').text(data.user_name);
+                // 保存用户名
+                $api.setStorage('user_name',data.user_name);
+                user_vip = data.user_vip;
+                if(data.user_agent == 1){
+                    $('.userBlock .tuiguang').css('display','block')
+                    $('.userBlock .tuiguang span').text(data.user_agent_id);
+                }
+
+                $api.setStorage('user_invita', data.user_invita);
+            }
+        });
+    }
+    // 打开个人中心
+    function fnOpenMyData() {
+        api.openWin({
+            name: 'myData_win',
+            url: './myData_win.html',
+        });
+    }
+    // 查看所有订单
+    function fnSeeAllOrder() {
+        api.openWin({
+            name: 'order_win',
+            url: 'order/order_win.html',
+            pageParam: {
+                index: 0
+            }
+        });
+    }
+    // 打开我的余额
+    function fnGoMyBanlance() {
+        api.openWin({
+            name: 'myBalance_win',
+            url: 'mySetting/myBalance_win.html',
+        });
+    }
+    // 打开我的推荐
+    function fnMyRecommend() {
+        api.openWin({
+            name: 'myRecommend_win',
+            url: 'mySetting/myRecommend_win.html',
+        });
+    }
+    // 打开我的收藏
+    function fnMyCollect() {
+        api.openWin({
+            name: 'myCollect_win',
+            url: 'mySetting/myCollect_win.html',
+        });
+    }
+    // 打开版本更新
+    function fnUpdate() {
+        api.openWin({
+            name: 'update_win.html',
+            url: 'mySetting/update_win.html',
+        });
+    }
+    // 打开问题反馈
+    function fnProblem() {
+        api.openWin({
+            name: 'problem_win.html',
+            url: 'mySetting/problem_win.html',
+        });
+    }
+    // 打开关于我们
+    function fnAboutUs() {
+        api.openWin({
+            name: 'aboutUs_win.html',
+            url: 'mySetting/aboutUs_win.html',
+        });
+    }
+
+    // 跳转相应的订单
+    function fnGoOrderList(that) {
+        api.openWin({
+            name: 'order_win',
+            url: 'order/order_win.html',
+            pageParam: {
+                index: $(that).index() + 1
+            }
+        });
+    }
+    // 分享微信等
+    function fnOpenShare(type) {
+        if (user_vip != 1) {
+            api.toast({
+                msg: '您还不是会员，无法分享',
+                duration: 2000,
+                location: 'bottom'
+            });
+            return;
+        }
+        api.openWin({
+            name: 'myShare_win',
+            url: 'mySetting/myShare_win.html',
+        });
+    }
+</script>
+
+</html>

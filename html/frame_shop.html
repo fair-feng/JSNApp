@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>商城</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/swiper-4.3.3.min.css">
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <style>
+        body,html {
+            background: #f7f7f7;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /*height: 42px;*/
+            height: 58px;
+            /*background-color: #365365;*/
+            z-index: 999;
+            background: url('../image/topBg.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 42px;
+            color: #fff;
+        }
+
+        header .left .city {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            padding-left: 27px;
+            box-sizing: border-box;
+            font-size: 18px;
+            color: #fff;
+            text-align: left;
+        }
+
+        header .left .city .text {
+            font-size: 14px
+        }
+
+        header .search {
+            transition: all 2s linear;
+            padding-top: 6px;
+        }
+
+        header .search .left {
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+        }
+
+        header .search .center {
+            height: 19px;
+            line-height: 19px;
+            padding: 5px 0;
+            /*width: 270px;*/
+            background: #fff;
+            font-size: 16px;
+            border-radius: 19px;
+            color: #949494;
+            margin-left: 28px;
+            margin-right: 28px;
+            text-align: center;
+        }
+
+        header .search .center i {
+            font-size: 17px;
+            vertical-align: middle;
+        }
+
+        header .search .center input {
+            margin-left: 10px;
+            outline: none;
+            width: 190px;
+            font-size: 13px;
+        }
+
+        header .right {
+            color: #fff;
+            position: absolute;
+            bottom: 16px;
+            right: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            font-size: 20px;
+        }
+
+        header .right i {
+            color: #FFF;
+            font-size: 16px;
+        }
+        #wrapper {
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            background: #f7f7f7;
+            z-index: 999;
+            top: -16px;
+        }
+        /*轮播图*/
+        .swiper-container {
+			width: 100vw;
+            padding-top: 10px;
+		}
+        .swiper-container .swiper-slide {
+            width: 300px;
+            height: 135px;
+        }
+
+        .swiper-container .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        .message {
+            height: 100px;
+            overflow: hidden;
+        }
+        /* 公告 */
+
+        .noticeBlock {
+            display: flex;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+        .noticeBlock .left {
+            border-right: 1px solid #e6e6e6;
+            padding-right: 10px;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+        .noticeBlock .left .noticeBg {
+            background: url('../image/noticeBg.png') no-repeat;
+            background-size: 100% 100%;
+            margin-top: 5px;
+            padding: 1px 3px;
+            width: 30px;
+            margin-top: 11px;
+            color: #ffffff;
+        }
+        .con {
+            width: 150px;
+            vertical-align: middle;
+        }
+        .noticeBlock .right {
+            font-size: 12px;
+        }
+        .noticeBlock .right .text:last-child {
+            margin-top: 6px;
+        }
+        .noticeBlock .right .title {
+            color: #d3b56f;
+            border:1px solid #d3b56f;
+            border-radius: 3px;
+            padding: 1px 4px;
+            vertical-align: middle;
+        }
+        /* 卡 */
+
+        .vipCard {
+            display: flex;
+            text-align: center;
+            border-top: 1px solid #f5f5f5;
+            border-bottom: 1px solid #f5f5f5;
+            padding: 11px 10px;
+            border-top: 14px solid #eeeeee;
+            margin-top: 20px;
+        }
+
+        .vipCard img {
+            width: 167px;
+            height: 84px;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+
+        .vipCard .cards {
+            width: 50%;
+        }
+        /* 精品推荐 */
+
+        .tuijian {
+            text-align: center;
+            /*margin: 13px 0;*/
+            background: url('../image/title_bg.png') no-repeat;
+            background-size: 35% 12px;
+            background-position: 50% 50%;
+            padding: 15px 0;
+        }
+        .btGrey {
+            border-top: 14px solid #eeeeee;
+        }
+        .hotSHop img {
+            width: 100%;
+            /*height: 150px;*/
+            height: auto;
+        }
+        /* 商品 */
+
+        .goodsLists li {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            background: #fff;
+            margin-bottom: 12px;
+            padding: 10px 25px 10px 40px;
+        }
+        .goodsLists li .right {
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+            justify-content: space-around;;
+            text-align: right;
+            width: 160px;
+        }
+        .goodsLists .right .text {
+            line-height: 20px;
+            text-align: left;
+        }
+        .goodsLists .right .valBlock {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+        }
+        .goodsLists .right .valBlock .value{
+                line-height: 32px;
+        }
+        .goodsLists .right .valBlock icon {
+            background: #dbc596;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 100%;
+            font-size: 22px;
+        }
+        .goodsLists img {
+            /*width: 75px;*/
+            width: auto;
+            max-width: 120px;
+            height: 110px;
+        }
+        /* 底线 */
+        .lines {
+            color: #cccccc;
+            text-align: center;
+            margin: 13px 0;
+        }
+
+        .lines .left,
+        .lines .right {
+            display: inline-block;
+            width: 50px;
+            border-bottom: 1px solid #cccccc;
+            text-decoration: line-through;
+            vertical-align: middle;
+        }
+        .noticeBlock {
+            display: flex;
+            /*height: 30px;*/
+            padding: 5px 14px;
+        }
+
+        .notice_wrap1,
+        .notice_wrap2 {
+            display: inline-block;
+            height: 18px;
+            overflow: hidden;
+            margin-top: 7px;
+            width: 150px;
+            vertical-align: middle;
+        }
+
+        .hdemo1 p,
+        .hdemo2 p {
+            height: 18px;
+            color: #324A5A;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <!-- 搜索title -->
+        <div class="search">
+            <div class="center">
+                <i class="iconfont icon-i_search_nav_selecte"></i>
+                <input class="textSearch" type="text" placeholder="搜索你想要的商品">
+            </div>
+            <!-- <icon class="right iconfont icon-xiaoxi3" onclick="fnMessage()"></icon> -->
+        </div>
+    </header>
+    <section id="wrapper">
+
+    </section>
+</body>
+<script id="indexTemp" type="text/x-dot-template">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            {{~it.banner:value:index}}
+                {{? value.banner_type == 1 && value.banner_url != ''}}
+                    <div class="swiper-slide" onclick="fnOpenGoodDetails({{= value.banner_url}})">
+                        <img src="{{= $api.reqUrl + value.banner_img}}" alt="">
+                    </div>
+                {{??}}
+                    <div class="swiper-slide">
+                        <img src="{{= $api.reqUrl + value.banner_img}}" alt="">
+                    </div>
+                {{?}}
+            {{~}}
+        </div>
+    </div>
+    <div class="noticeBlock card">
+        <div class="left">
+            <span style="padding-left:2px;margin-top: 8px;">商城</span>
+            <div class="noticeBg">公告</div>
+        </div>
+        <div class="right">
+            {{~it.msg:value:index}}
+                <div class="text">
+                    <span class="title">{{= value.label}}</span>
+                    {{? index == 0}}
+                        <div class="notice_wrap1" >
+                    {{??}}
+                        <div class="notice_wrap2" >
+                    {{?}}
+                        <div class="hdemo1">
+                            {{~value.content:key:value}}
+                                <p class="con line-1" onclick="fnOpenMsgDetailsWin({{= key.id}})">{{= key.msg}}</p>
+                            {{~}}
+                        </div>
+                        <div class="hdemo2"></div>
+                    </div>
+                </div>
+            {{~}}
+        </div>
+    </div>
+    <div class="vipCard">
+        {{~it.mcard:value:index}}
+            <div class="cards" tapmode onclick="fnDetailsCar({{= value.id}})">
+                <img src="{{= $api.reqUrl + value.img}}" alt="">
+            </div>
+        {{~ }}
+    </div>
+    <div class="tuijian btGrey">
+        <span>{{= it.middle.name}}</span>
+    </div>
+    <div class="hotSHop">
+        <img src="{{= $api.reqUrl + it.middle.img}}" alt="">
+    </div>
+    <div class="tuijian">
+        <span>为你推荐</span>
+    </div>
+</script>
+<script id="goodsTemp" type="text/x-dot-template">
+    <ul class="goodsLists">
+        {{~it:value:index}}
+            <li onclick="fnOpenGoodDetails({{= value.goods_id}})">
+                <img src="{{= $api.reqUrl + value.goods_img}}" alt="">
+                <div class="right">
+                    <p class="text line-2">{{= value.goods_name}}</p>
+                    <div class="valBlock">
+                        <span class="value pubColor">￥{{= value.goods_price}}</span>
+                        <icon class="iconfont icon-gouwuche1"  onclick="fnJoinGoodsCar({{= value.goods_id}})"></icon>
+                    </div>
+                </div>
+            </li>
+        {{~}}
+    </ul>
+    <div class="lines">
+        <span class="left"></span>
+        <span>我是有底线的</span>
+        <span class="right"></span>
+    </div>
+</script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript" src="../script/swiper-4.3.3.min.js"></script>
+<script type="text/javascript" src="../script/doT.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+            // 防止header与状态栏重叠
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            var localStorage = $api.getStorage('userToken');
+            //  请求数据
+            initData();
+            // 商品数据
+            // initDataGoods();
+            // 设置swipermargin
+            var wrapper = $api.byId('wrapper');
+            var headerH = $api.offset(header);
+            $api.css(wrapper, 'margin-top:' + headerH.h + 'px');
+
+            $api.rmStorage('user_invita');
+        }
+        // swiper
+        function fnSwiper() {
+            var mySwiper = new Swiper('.swiper-container', {
+                autoplay:true,
+                observer: true, //修改swiper自己或子元素时，自动初始化swiper
+                observeParents: true, //修改swiper的父元素时，自动初始化swiper
+                autoplay: {
+                    // disableOnInteraction: false,
+                },
+                effect : 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                // slidesPerView: 3,
+                slidesPerView: 'auto',
+                coverflowEffect: {
+                    rotate: 40,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows : true,
+                 },
+            });
+        }
+    // 消息
+    function fnMessage() {
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: 2
+        });
+    }
+    // 监听回车
+    $('.textSearch').bind('keyup', function(event) {
+    　　if (event.keyCode == "13") {
+    　　　　//回车执行查询
+            fnOpenSearchList();
+    　　}
+    });
+        // 轮播模块
+    var bannerList = []; // 轮播图数据
+    function fnOpenSearchList() {
+        var paraInputDom = $api.dom('.search .textSearch');
+        var paraInputVal = $api.val(paraInputDom);
+        api.openWin({
+            name: 'searchGoods_win',
+            url: './searchGoods_win.html',
+            pageParam: {
+                name: paraInputVal
+            }
+        });
+        $api.val(paraInputDom, '')
+    }
+    // 跳转消息通知
+    function fnOpenMsgDetailsWin(ids) {
+        api.openWin({
+            name: 'message_win',
+            url: './message_win.html',
+            pageParam: {
+                id: ids
+            }
+        });
+    }
+    // 跳转卡详情
+    function fnDetailsCar(carid) {
+        api.openWin({
+            name: 'detailsCar_win',
+            url: './detailsCar_win.html',
+            pageParam: {
+                id: carid
+            }
+        });
+    }
+    // 数据请求轮播图、消息
+    function initData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Index/index_app',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                }
+            }
+        }, function(ret, err) {
+            // console.log(JSON.stringify(ret));
+            if(ret.code == 1){
+                var arrText = doT.template($('#indexTemp').text());
+                $('#wrapper').html(arrText(ret.data));
+                initDataGoods();
+                fnSwiper();
+                var anima1 = new Animation(100,'.notice_wrap1');
+                anima1.init();
+                setTimeout(function () {
+                    var anima2 = new Animation(100,'.notice_wrap2');
+                    anima2.init();
+                },1800)
+            }
+        });
+    }
+    // 首页商品数据
+    function initDataGoods() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Index/index_g',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                }
+            }
+        }, function(ret, err) {
+            // console.log(JSON.stringify(ret));
+            var arrText = doT.template($('#goodsTemp').text());
+            $('#wrapper').append(arrText(ret.data));
+        });
+    }
+    // 跳转商品详情
+    function fnOpenGoodDetails(para) {
+        if (para == '' || para == undefined) {
+            return;
+        }
+        api.openWin({
+            name: 'goodsDetails_win',
+            url: './goodsDetails_win.html',
+            pageParam: {
+                goods_id: para
+            }
+        });
+    }
+
+    // 创建动画类
+    function Animation(speed,ele) {
+        this.speed = speed; // 速度
+        this.ele = ele;
+        this.MyMar;
+    }
+    Animation.prototype.init = function () {
+        this.htab = $(this.ele).get(0);
+        this.htab1 = $(this.ele).children('.hdemo1').get(0);
+        this.htab2 = $(this.ele).children('.hdemo2').get(0);
+        this.htab2.innerHTML = this.htab1.innerHTML;
+        this.htab.scrollTop = this.htab1.offsetHeight;
+        this.MyMar = setInterval(this.marquee.bind(this), this.speed);
+    }
+    Animation.prototype.marquee = function () {
+        var that = this;
+        if (that.htab.scrollTop >= that.htab1.offsetHeight) {
+            that.htab.scrollTop -= that.htab2.offsetHeight;
+        } else {
+            if (that.htab.scrollTop % 18 == 15) {
+                clearInterval(that.MyMar);
+                setTimeout(function() {
+                    that.MyMar = setInterval(that.marquee.bind(that), that.speed);
+                }, 1800);
+            }
+            that.htab.scrollTop += 1;
+        }
+    }
+    // 加入购物车
+    function fnJoinGoodsCar(goodsId) {
+        window.event? window.event.cancelBubble = true : e.stopPropagation();
+        api.openFrame({
+            name: 'guige_frm',
+            url: './guige_frm.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                goods_id: goodsId,
+                typeId: 2, // 加入购物车
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,.5)',
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    }
+</script>
+
+</html>

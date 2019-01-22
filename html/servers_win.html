@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<title>客服</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<link rel="stylesheet" href="../css/iconfont.css">
+</head>
+<style type="text/css">
+	header {
+		position: relative;
+		width: 100%;
+		height: 42px;
+		background-color: #365365;
+	}
+
+	header .left {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 40px;
+		height: 42px;
+		line-height: 42px;
+		color: #fff;
+		text-align: center;
+		overflow: hidden;
+		z-index: 1;
+	}
+
+	header .center {
+		position: relative;
+		width: 100%;
+		height: 42px;
+		line-height: 42px;
+		text-align: center;
+		font-size: 16px;
+		color: #FFFFFF;
+	}
+</style>
+
+<body>
+	<header id="header">
+		<div class="left" onclick="fnCloseWin();">
+			<i class="iconfont icon-fanhui"></i>
+		</div>
+		<div class="center">客服咨询</div>
+	</header>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script src="../script/zepto.1.2.0.js"></script>
+<script>
+	apiready = function() {
+		var header = $api.byId('header');
+		$api.fixStatusBar(header);
+		// 加载frame
+		openFrame();
+		api.addEventListener({
+			name: 'keyback'
+		}, function(ret, err) {
+			api.closeWin();
+			var jsfun = 'fnInitData();';
+			api.execScript({
+				name: 'main_win',
+				frameName: 'frame2',
+				script: jsfun
+			});
+		});
+	}
+
+	function openFrame() {
+		var header = $api.byId('header');
+		var headerH = $api.offset(header).h;
+		api.openFrame({
+			name: 'servers_frm',
+			url: './servers_frm.html',
+			bgColor: 'rgba(0, 0, 0, 0.8)',
+			rect: {
+				x: 0,
+				y: headerH,
+				w: 'auto', // 自动填充所在Window的宽度
+				h: 'auto' // 自动填充所在Window的高度
+			},
+			bounces: true, // 打开弹动
+			pageParam: api.pageParam
+		});
+	}
+	// 初始化回调frame2 Init函数
+	function fnCloseWin() {
+		api.closeWin();
+		// var jsfun = 'fnInitData();';
+		// api.execScript({
+		// 	name: 'main_win',
+		// 	frameName: 'frame2',
+		// 	script: jsfun
+		// });
+		api.sendEvent({
+		    name: 'raloadMsg',
+		    extra: {}
+		});
+
+	}
+
+</script>
+
+</html>

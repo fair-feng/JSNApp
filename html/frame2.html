@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>消息中心</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <link rel="stylesheet" href="../css/aui.css">
+    <style>
+        body,
+        html {
+            background: #F3F3F3;
+        }
+
+        #header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            /*position: relative;*/
+            width: 100%;
+            height: 42px;
+            /*background-color: #365365;*/
+            background: url('../image/topBg.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        header .left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 42px;
+            line-height: 42px;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        header .center {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+
+        #items {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .aui-bar {
+            font-size: 16px;
+        }
+
+        .aui-bar-nav {
+            background: #365365;
+        }
+
+        .aui-bar-btn-item {
+            border-color: #d3b56f;
+            background: #fff;
+        }
+
+        .aui-bar-btn-item.aui-active {
+            background-color: #d3b56f;
+        }
+
+        .lis-text {
+            font-size: 14px;
+            color: #696969;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .lis-date {
+            color: #696969;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .aui-list-item-media img {
+            height: 80px;
+        }
+
+        .none {
+            display: none!important;
+        }
+        .lis-tz,
+        .lis-hd {
+            background: #F3F3F3;
+            padding-left: 0!important;
+        }
+        .lis-tz .lis-text img,
+        .lis-hd .lis-text img {
+            width: 50px;
+            /*height: 50px;*/
+        }
+
+        .aui-media-list-item-inner {
+            background: #fff !important;
+            border-bottom: 1px solid #F3F3F3;
+        }
+        /* 没有数据 */
+
+        .noCard {
+            display: none;
+            margin-top: 35vh;
+        }
+
+        .noCard .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noCard .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+
+        .aui-list .aui-list-item {
+            min-height: 0;
+        }
+        .details {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <header id="header" class="aui-bar aui-bar-nav">消息</header> -->
+    <header id="header" class="aui-bar aui-bar-nav">消息</header>
+    <!-- <header id="header">
+        <div class="center">消息</div>
+    </header> -->
+    <div id="items" class="aui-bar aui-bar-btn aui-bar-btn-full">
+        <div class="aui-bar-btn-item aui-active">通知</div>
+        <div class="aui-bar-btn-item">互动</div>
+    </div>
+    <div class="aui-content aui-margin-b-15">
+        <ul id="content" class="aui-list aui-media-list">
+            <li class="aui-list-item lis-tz">
+                <div class="cont"></div>
+                <!-- <div class="aui-media-list-item-inner">
+                    <div class="aui-list-item-media">
+                        <img src="../image/swiper-01.png" onclick="fnMsgDtails()">
+                    </div>
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-text">
+                            <div class="aui-list-item-title">这是一条通知消息这是一条</div>
+                            <span class="details iconfont icon-guanbi" onclick="fnDetails()"></span>
+                        </div>
+                        <div class="lis-text">
+                            这里是内容区域，新版中的列表布局可以很轻松的帮助开发者完成常见列表样式。这里是内容区域，新版中的列表布局可以很轻松的帮助开发者完成常见列表样式。
+                        </div>
+                        <div class="lis-date aui-margin-t-5" style="padding:0">2015-07-14 10:31
+                        </div>
+                    </div>
+                </div> -->
+                <!-- 暂无数据 -->
+                <div class="noCard tzMask">
+                    <div class="block">
+                        <img src="../image/notComments@2x.png" alt="">
+                        <span>暂无消息</span>
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item lis-hd none">
+                <div class="cont">
+
+                </div>
+                <!-- 暂无数据 -->
+                <div class="noCard hdMask">
+                    <div class="block">
+                        <img src="../image/notComments@2x.png" alt="">
+                        <span>暂无消息</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript" src="../script/aui-tab.js"></script>
+<script type="text/javascript" src="../script/aui-slide.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+            // 防止header与状态栏重叠
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            // 初始化数据请求
+            fnInitData();
+            // 设置高度
+            var items = $api.byId('items');
+            var itemsH = $api.offset(items);
+
+            var content = $api.byId('content');
+            var headerH = $api.offset(header);
+            $api.css(items, 'margin-top:' + headerH.h + 'px');
+            $api.css(content, 'margin-top:' + (itemsH.h + headerH.h) + 'px');
+            api.addEventListener({
+                name: 'raloadMsg'
+            }, function(ret, err){
+                if( ret ){
+                     fnInitData();
+                }
+            });
+
+        }
+        // tab 切换
+    var tab = new auiTab({
+        element: document.getElementById("items"),
+        index: 1,
+        repeatClick: false
+    }, function(ret) {
+        var lis = $api.domAll('#content li');
+        var index_ = ret.index;
+        for (var i = 0; i < lis.length; i++) {
+            if (index_ - 1 == i) {
+                $api.removeCls(lis[i], 'none');
+            } else {
+                $api.addCls(lis[i], 'none');
+            }
+        }
+    });
+
+    // 初始化数据请求
+    function fnInitData() {
+        $('.lis-hd .cont').html('');
+        $('.lis-tz .cont').html('');
+        // 通知
+        api.ajax({
+            url: $api.reqUrl + 'Home/Msg/index',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken')
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code ==1) {
+                var data = ret.data;
+                for (var i = 0; i < data.length; i++) {
+                    var string = '<div class="aui-media-list-item-inner">\
+                        <div class="aui-list-item-media">\
+                            <img src="../image/smallTz.png" onclick="fnMsgDtails('+data[i].id+')">\
+                        </div>\
+                        <div class="aui-list-item-inner">\
+                            <div class="aui-list-item-text">\
+                                <div class="aui-list-item-title">'+data[i].title+'</div>\
+                                <span class="details iconfont icon-guanbi" onclick="fnDetails('+data[i].id+')"></span>\
+                            </div>\
+                            <div class="lis-text" onclick="fnMsgDtails('+ data[i].id +')">'+ data[i].message +'</div>\
+                            <div class="lis-date aui-margin-t-5" style="padding:0">'+data[i].m_date+'</div>\
+                        </div>\
+                    </div>';
+
+                    // var string = "<div class=\"aui-media-list-item-inner\" onclick=\"fnMsgDtails(" + data[i].id +
+                    //     ")\"><div class=\"aui-list-item-media\"><img src=\"../image/smallTz.png\"></div> <div class=\"aui-list-item-inner\"><div class=\"aui-list-item-text\"><div class=\"aui-list-item-title\">" +
+                    //     data[i].title + "</div></div><div class=\"lis-text\">" + data[i].message + "</div><div class=\"lis-date aui-margin-t-5\" style=\"padding:0\">" + data[i].m_date + "</div></div></div>";
+
+                    $('.lis-tz .cont').append(string);
+                }
+            } else {
+                $('.tzMask').css('display','block');
+                $('.lis-tz').css('background-image','none');
+            }
+        });
+        // 互动
+        api.ajax({
+            url: $api.reqUrl + 'Home/Msg/chat_list',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken')
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                var data = ret.data;
+                    for (var i in data) {
+                        var string = '<div class="aui-media-list-item-inner" onclick="fnGoServer('+ data[i].id +')">\
+                            <div class="aui-list-item-media">\
+                                <img src="'+$api.reqUrl+data[i].goods_img+'">\
+                            </div>\
+                            <div class="aui-list-item-inner">\
+                                <div class="aui-list-item-text">\
+                                    <div class="aui-list-item-title">客服人员回复您</div>\
+                                </div>\
+                                <div class="lis-text">'+ data[i].chat.chat_content +'</div>\
+                                <div class="lis-date aui-margin-t-5" style="padding:0">'+data[i].ctime+'</div>\
+                            </div>\
+                        </div>';
+                        $('.lis-hd .cont').append(string);
+                    }
+            } else {
+                $('.hdMask').css('display','block');
+                $('.lis-hd').css('background-image','none');
+            }
+        });
+    }
+    // 跳转通知详情
+    function fnMsgDtails(id) {
+        api.openWin({
+            name: 'message_win',
+            url: './message_win.html',
+            pageParam: {
+                id: id
+            }
+        });
+        // 回调刷新通知条数
+        var jsfun = 'confirmNum();';
+        setTimeout(function () {
+            api.execScript({
+                name: 'main_win',
+                script: jsfun
+            });
+            fnInitData();
+        },800);
+    }
+    // 跳转互动详情
+    function fnGoServer(id) {
+        api.openWin({
+            name: 'servers_win',
+            url: './servers_win.html',
+            pageParam: {
+                group_id: id
+            }
+        });
+    }
+    // 删除
+    function fnDetails(para) {
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: '提示',
+                content: '是否确认操作',
+                leftBtnTitle: '取消',
+                rightBtnTitle: '确认'
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 20,
+                    icon: 'widget://res/gou.png',
+                    iconSize: 40,
+                    titleSize: 14,
+                    titleColor: '#000'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#f3f3f3',
+                    color: '#E4084B',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#E4084B',
+                    size: 12,
+                    color: '#fff',
+                }
+            }
+        }, function(ret) {
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            } else {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+                fnAjaxDelete(para);
+            }
+        });
+    }
+    function fnAjaxDelete(para) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/Msg/del_msg',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: para
+                },
+            }
+        },function(ret, err){
+            if (ret.code == 1) {
+                fnInitData();
+                var js1 = 'confirmNum();';
+                api.execScript({
+                    name: 'main_win',
+                    script: js1
+                });
+                api.toast({
+                    msg: '删除成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            }
+        });
+    }
+</script>
+
+</html>

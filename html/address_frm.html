@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>收货地址</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style>
+        body,
+        html {
+            background: #f8f8f8;
+        }
+
+        #addList {
+            font-size: 14px;
+        }
+
+        #addList>li {
+            margin-bottom: 3px;
+            background: #fff;
+        }
+
+        #addList .top {
+            padding: 10px 15px;
+            line-height: 25px;
+        }
+
+        .top .addre {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            color: #d2d2d2;
+        }
+
+        #addList .top .namePhone span:first-child {
+            margin-right: 10px;
+        }
+
+        .bottom {
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #F3F3F3;
+            padding: 10px 15px;
+            color: #bebebe;
+        }
+
+        #addList .bottom .left input[type="radio"]+label::before {
+            content: "\a0";
+            /*不换行空格*/
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 18px;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+            border: 1px solid #d3b56f;
+            text-indent: 3px;
+            line-height: 1;
+        }
+
+        #addList .bottom .left input[type="radio"]:checked+label::before {
+            background-color: #d3b56f;
+            background-clip: content-box;
+            padding: 3px;
+            width: 10px;
+            height: 10px;
+        }
+
+        #addList .bottom .left input[type="radio"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+        .right icon {
+            color: #959595;
+        }
+        .bottom .right span {
+            padding: 0 5px;
+            color: #d2d2d2;
+        }
+
+        .addAddre {
+            position: fixed;
+            bottom: 0;
+            background: #d3b56f;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .aui-dialog-footer {
+            background-image: -webkit-linear-gradient(90deg, #d3b56f, #d3b56f 50%, transparent 50%);
+        }
+
+        .aui-dialog-footer .aui-dialog-btn:first-child {
+            color: #d3b56f;
+        }
+
+        .aui-dialog-footer .aui-dialog-btn:last-child {
+            border-bottom-right-radius: .3rem;
+            background: #d3b56f;
+            color: #fff;
+        }
+        .notData {
+            text-align: center;
+            margin-top: 40vh;
+            font-size: 18px;
+            color: #6b6b6b;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="addList">
+         <!-- <li>
+            <div class="top">
+                <p class="namePhone">
+                    <span>何先生</span>
+                    <span>13485859652</span>
+                </p>
+                <p class="addre">河南省郑州市金水区优胜北路318号</p>
+            </div>
+            <div class="bottom">
+                <div class="left">
+                    <input type="radio" id="1" name="addre" value="1">
+                    <label for="1">设为默认地址</label>
+                </div>
+                <div class="right">
+                    <icon class="iconfont icon-bianji"></icon>
+                    <span class="edit" tapmode onclick="fnEdit()">编辑</span>
+                    <icon style="margin-left:5px" class="iconfont icon-shanchu"></icon>
+                    <span class="del" tapmode onclick="fnDel(this)">删除</span>
+                </div>
+            </div>
+        </li> -->
+        <div class="notData">您还没有创建收货地址</div>
+    </ul>
+    <div class="addAddre" onclick="fnAddAddre()">新增收货地址</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化请求
+        fnInitData();
+        // 下拉刷新
+        api.setRefreshHeaderInfo(function(ret, err) {
+            //refresh event callback
+            fnInitData();
+            setTimeout(function() {
+                api.refreshHeaderLoadDone();
+            }, 3000);
+        });
+    };
+
+    // 删除
+    var dialog = new auiDialog({});
+
+    function fnDel(that, city_id) {
+        dialog.alert({
+            title: "",
+            msg: '确定要删除收货地址吗？',
+            buttons: ['我在想想', '我想好了']
+        }, function(ret) {
+            if (ret.buttonIndex == 2) {
+                // 删除数据
+                api.ajax({
+                    url: $api.reqUrl + 'Home/My/del_city',
+                    method: 'post',
+                    data: {
+                        values: {
+                            token: $api.getStorage('userToken'),
+                            id: city_id
+                        }
+                    }
+                }, function(ret, err) {
+                    if (ret) {
+                        if (ret.code == 1) {
+                            api.toast({
+                                msg: '删除成功',
+                                duration: 2000,
+                                location: 'middle'
+                            });
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                                duration: 2000,
+                                location: 'middle'
+                            });
+                        }
+                        $(that).parents('li').remove();
+                    }
+                });
+
+            }
+        })
+    }
+    // 初始化数据请求
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_city',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken')
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if(ret.code == 2){
+                    $('.notData').show();
+                }
+                if (ret.code != 1) {
+                    return;
+                }
+                $('#addList').html('');
+                var data = ret.data;
+                for (var i = 0; i < data.length; i++) {
+                    // var string = `<li>
+                    //     <div class="top">
+                    //         <p class="namePhone">
+                    //             <span>${data[i].name}</span>
+                    //             <span>${data[i].phone}</span>
+                    //         </p>
+                    //         <p class="addre">${data[i].city + data[i].city_xq}</p>
+                    //     </div>
+                    //     <div class="bottom">
+                    //         <div class="left">
+                    //             <input type="radio" id="${data[i].city_id}" name="addre" value="1">
+                    //             <label for="${data[i].city_id}"></label>
+                    //         </div>
+                    //         <div class="right">
+                    //             <span class="edit" tapmode onclick="fnEdit()">编辑</span>
+                    //             <span class="del" tapmode onclick="fnDel(this)">删除</span>
+                    //         </div>
+                    //     </div>
+                    // </li>`;
+                    var string;
+                    if (data[i].city_state == 1) {
+                        string = "<li><div class=\"top\"> <p class=\"namePhone\"><span>" + data[i].name +
+                            "</span><span>" + data[i].phone + "</span></p><p class=\"addre\">" + (data[i].city + data[i].city_xq) +
+                            "</p></div><div class=\"bottom\"><div class=\"left\"><input checked type=\"radio\" id=\"" + data[i].city_id + "\" name=\"addre\" value=\"1\"><label onclick='defaultAddress(" + data[i].city_id + ")' for=\"" +
+                            data[i].city_id + "\">默认地址</label></div><div class=\"right\"><span class=\"edit\" tapmode onclick=\"fnEdit(" + data[i].city_id + ")\">编辑</span><span class=\"del\" tapmode onclick=\"fnDel(this," + data[i].city_id +
+                            ")\">删除</span></div></div></li>";
+                    } else {
+                        string = "<li><div class=\"top\"> <p class=\"namePhone\"><span>" + data[i].name +
+                            "</span><span>" + data[i].phone + "</span></p><p class=\"addre\">" + (data[i].city + data[i].city_xq) +
+                            "</p></div><div class=\"bottom\"><div class=\"left\"><input type=\"radio\" id=\"" + data[i].city_id + "\" name=\"addre\" value=\"1\"><label onclick='defaultAddress(" + data[i].city_id + ")' for=\"" +
+                            data[i].city_id + "\">默认地址</label></div><div class=\"right\"><span class=\"edit\" tapmode onclick=\"fnEdit(" + data[i].city_id + ")\">编辑</span><span class=\"del\" tapmode onclick=\"fnDel(this," + data[i].city_id +
+                            ")\">删除</span></div></div></li>";
+                    }
+                    $('#addList').append(string);
+                }
+                setTimeout(function() {
+                    api.refreshHeaderLoadDone();
+                }, 500);
+            }
+        });
+    }
+    // 添加地址
+    function fnAddAddre() {
+        api.openWin({
+            name: 'editAddress_win',
+            url: './editAddress_win.html',
+            pageParam: {
+                type: 'add'
+            }
+        });
+    }
+    // 编辑
+    function fnEdit(para) {
+        api.openWin({
+            name: 'editAddress_win',
+            url: './editAddress_win.html',
+            pageParam: {
+                type: 'edit',
+                city_id: para
+            }
+        });
+    }
+
+    // 设置默认地址
+    function defaultAddress(city_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/default_city',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: city_id
+                },
+            }
+        }, function(ret, err) {
+            if (ret.code == 1) {
+                if (api.pageParam.type == 'order') {
+                    api.toast({
+                        msg: '默认地址成功',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                    setTimeout(function () {
+                        api.closeWin();
+                    },500);
+                    // 回调，刷新商品详情数据
+                    var jsfun = 'fnInitData();';
+                    api.execScript({
+                        name: 'submitOrder_win',
+                        frameName: 'submitOrder_frm',
+                        script: jsfun
+                    });
+                } else {
+                    api.toast({
+                        msg: '默认地址成功',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+
+            } else {
+                api.toast({
+                    msg: ret.msg,
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+    }
+</script>
+
+</html>

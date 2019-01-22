@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>提现设置</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+      <style>
+      body,html {
+          background: #F3F3F3;
+      }
+      #wrapper li {
+          display: -webkit-flex;
+          display: flex;
+          justify-content: space-between;
+          padding: 12px 15px;
+          border-top: 1px solid #F3F3F3;
+          background: #fff;
+      }
+
+      #wrapper li>span {
+          color: #404040;
+          font-size: 14px;
+          line-height: 25px;
+      }
+      </style>
+  </head>
+  <body>
+    <ul id="wrapper">
+        <li onclick="fnAliPayCash()">
+            <span>支付宝提现</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+        <li onclick="fnBankCardCash()">
+            <span>银行卡提现</span>
+            <div class="right">
+                <i class="iconfont icon-gengduo"></i>
+            </div>
+        </li>
+    </ul>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+    //   支付宝提现
+      function fnAliPayCash() {
+        api.openWin({
+            name: 'aliPayCash_win',
+            url: './aliPayCash_win.html',
+        });
+      }
+    //   银行卡提现
+      function fnBankCardCash() {
+        api.openWin({
+            name: 'bankCardCash_win',
+            url: './bankCardCash_win.html',
+        });
+      }
+  </script>
+  </html>

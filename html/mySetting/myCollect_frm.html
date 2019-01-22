@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>我的收藏</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        body,html {
+            background: #F3F3F3;
+        }
+        /* 收藏 */
+        .noComments {
+            display: none;
+            margin-top: 35vh;
+        }
+
+        .noComments .block {
+            width: 140px;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .noComments .block>img {
+            width: 140px;
+            height: 134px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 暂无收藏 -->
+    <div class="noComments">
+        <div class="block">
+            <img src="../../image/notComments@2x.png" alt="">
+            <span>暂无收藏</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.1.2.0.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        // 初始化数据
+        fnInitData();
+    };
+    // 请求数据接收数组
+    var listDataArr = [];
+    // 初始化UI控件
+    function fnUiView() {
+        var UIListView = api.require('UIListView');
+        UIListView.open({
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: api.frameHeight
+            },
+            // data: [{
+            //     collect_id: '174',
+            //     imgPath: 'https://b-ssl.duitang.com/uploads/item/201505/01/20150501104422_cG5mQ.jpeg',
+            //     title: '[为你推荐]沪美竹炭黑面膜控油清洁提亮肤色保湿沪美竹炭黑面膜控油清洁提亮肤色保湿',
+            //     subTitle: '￥：164',
+            // }],
+            data: listDataArr,
+            rightBtns: [{
+                bgColor: '#E4084B',
+                activeBgColor: '#E4084B',
+                width: 65,
+                title: '删除',
+                titleSize: 16,
+                titleColor: '#fff',
+            }],
+            styles: {
+                borderColor: '#F3F3F3',
+                item: {
+                    bgColor: '#fff',
+                    activeBgColor: '#F5F5F5',
+                    height: 75.0,
+                    imgWidth: 60,
+                    imgHeight: 60,
+                    imgCorner: 4,
+                    placeholderImg: '',
+                    titleSize: 14.0,
+                    titleColor: '#3A3A3A',
+                    subTitleSize: 14.0,
+                    subTitleColor: '#E4084B',
+                    remarkColor: '#000',
+                    remarkSize: 16,
+                    remarkIconWidth: 30
+                }
+            },
+            fixedOn: api.frameName,
+            showScrollBar:true
+        }, function(ret, err) {
+            if (ret) {
+                // 点击事件，图片和其他内容，跳转详情
+                if(ret.eventType == 'clickContent' || ret.eventType == 'clickImg'){
+                    UIListView.getDataByIndex({
+                        index: ret.index
+                    }, function(ret, err) {
+                        if (ret) {
+                            api.openWin({
+                                name: 'goodsDetails_win',
+                                url: '../goodsDetails_win.html',
+                                pageParam: {
+                                    goods_id: ret.data.goodsId
+                                }
+                            });
+                        }
+                    });
+                }
+                if(ret.btnIndex ==0){
+                    // 根据索引查询搜藏ID并、删除
+                    searchId(ret.index);
+                    clickIndex = ret.index;
+                }
+            }
+        });
+    }
+    // 初始化数据请求
+    // 数据的条数
+    var dataLength = '';
+    function fnInitData() {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/my_collect',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code == 1){
+                    var data = ret.data;
+                    listDataArr =[];
+                    dataLength = data.length;
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = {};
+                        obj.collect_id = data[i].collect_id;
+                        obj.imgPath = $api.reqUrl + data[i].goods_img;
+                        obj.title = data[i].goods_name;
+                        obj.subTitle = '￥：' + data[i].goods_price;
+                        obj.goodsId = data[i].goods_id;
+                        listDataArr.push(obj);
+                    }
+                    // 加载UI控件
+                    fnUiView();
+                } else {
+                    fnifShowCollect('true');
+                }
+            }
+        });
+    }
+    /**
+    *    前端界面删除
+    *    para: clickIndex.点击UI删除时赋值的索引值
+    */
+    var clickIndex = '';
+    function fnDelete() {
+        var UIListView = api.require('UIListView');
+        UIListView.deleteItem({
+            index: clickIndex
+        }, function(ret, err) {
+            if (ret) {
+                if(ret.status == true){
+                    dataLength --;
+                    if(dataLength <=0){
+                        fnifShowCollect('true');
+                    }
+                    api.toast({
+                        msg: '删除成功',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+            }
+        });
+    }
+    /**
+    *  后端删除接口 fnDeteleAjax
+    *  para: collect_id.后台删除接口所需的收藏ID
+    */
+    function fnDeteleAjax(collect_id) {
+        api.ajax({
+            url: $api.reqUrl + 'Home/My/del_collect',
+            method: 'post',
+            data: {
+                values: {
+                    token: $api.getStorage('userToken'),
+                    id: collect_id
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                if(ret.code ==1){
+                    fnDelete();
+                }
+            }
+        });
+    }
+    /**
+    *    searchId 根据索引值查询此条收藏ID
+    *    para: paraId.索引值
+    */
+    function searchId(paraId) {
+        var UIListView = api.require('UIListView');
+        UIListView.getDataByIndex({
+            index: paraId
+        }, function(ret, err) {
+            if (ret) {
+                // 返回item的collect_id，作为参数发送后台删除接口
+                fnDeteleAjax(ret.data.collect_id);
+            }
+        });
+    }
+    // 展示暂无收藏模块
+    function fnifShowCollect(para) {
+        if(para == 'true'){
+            $('.noComments').css('display', 'block');
+        }
+        if(para == 'false'){
+            $('.noComments').css('display', 'none');
+        }
+    }
+</script>
+
+</html>
